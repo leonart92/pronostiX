@@ -1,0 +1,271 @@
+/* src/styles/globals.css - Version corrigée pour dark mode */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS pour le dark mode */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-card: #f8fafc;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --border-color: #475569;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* Base styles */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Classes utilitaires avec support dark mode natif */
+@layer components {
+    /* Boutons avec dark mode */
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+
+    .btn-primary {
+        @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:ring-blue-500;
+        @apply dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600;
+    }
+
+    .btn-outline {
+        @apply bg-transparent text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white focus:ring-blue-500;
+        @apply dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-400 dark:hover:text-white;
+    }
+
+    .btn-ghost {
+        @apply bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-500;
+        @apply dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100;
+    }
+
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+
+    .btn-xl {
+        @apply px-8 py-4 text-lg;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-sm;
+    }
+
+    /* Cards avec dark mode */
+    .card {
+        @apply bg-white border border-gray-200 rounded-lg shadow-sm transition-all duration-200;
+        @apply dark:bg-slate-800 dark:border-slate-700;
+    }
+
+    .card:hover {
+        @apply shadow-lg;
+        transform: translateY(-1px);
+    }
+
+    .card-white {
+        @apply bg-white dark:bg-slate-800;
+    }
+
+    .card-padding {
+        @apply p-6;
+    }
+
+    .card-padding-xl {
+        @apply p-8;
+    }
+
+    /* Sections avec fond adaptatif */
+    .section {
+        @apply py-16 px-4 bg-white dark:bg-slate-900;
+    }
+
+    .section-lg {
+        @apply py-20 px-4 bg-white dark:bg-slate-900;
+    }
+
+    /* Conteneurs */
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .container-narrow {
+        @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Texte avec couleurs adaptatives */
+    .text-gradient {
+        @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+    }
+
+    .text-hero {
+        @apply text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-slate-50;
+        font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .text-subtitle {
+        @apply text-lg md:text-xl text-gray-600 dark:text-slate-300;
+    }
+
+    /* Navigation avec transition */
+    .navbar {
+        @apply bg-white border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700;
+    }
+
+    /* Footer */
+    .footer {
+        @apply bg-white border-t border-gray-200 dark:bg-slate-800 dark:border-slate-700;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+        @apply animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-blue-600;
+    }
+
+    /* Badge avec dark mode */
+    .badge {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    }
+
+    .badge-primary {
+        @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+    }
+
+    .badge-success {
+        @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+    }
+
+    .badge-warning {
+        @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+    }
+
+    .badge-danger {
+        @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+    }
+}
+
+/* Override pour forcer certaines classes problématiques */
+.bg-gray-50 {
+    @apply !bg-gray-50 dark:!bg-slate-800;
+}
+
+.bg-gray-100 {
+    @apply !bg-gray-100 dark:!bg-slate-700;
+}
+
+.text-gray-900 {
+    @apply !text-gray-900 dark:!text-slate-100;
+}
+
+.text-gray-700 {
+    @apply !text-gray-700 dark:!text-slate-200;
+}
+
+.text-gray-600 {
+    @apply !text-gray-600 dark:!text-slate-300;
+}
+
+.text-gray-500 {
+    @apply !text-gray-500 dark:!text-slate-400;
+}
+
+.text-gray-400 {
+    @apply !text-gray-400 dark:!text-slate-500;
+}
+
+/* Inputs et formulaires avec dark mode */
+input, textarea, select {
+    @apply bg-white border-gray-300 text-gray-900;
+    @apply dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100;
+    @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+input:focus, textarea:focus, select:focus {
+    @apply ring-2 ring-blue-500 border-blue-500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .section {
+        @apply py-12 px-4;
+    }
+
+    .text-hero {
+        @apply text-3xl;
+    }
+}
+
+/* Scrollbar avec dark mode */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-slate-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-slate-500;
+}
