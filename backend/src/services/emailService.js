@@ -1,41 +1,29 @@
-// ✅ Version corrigée complète du fichier emailService.js
-const nodemailer = require('nodemailer');
+// services/emailService.js - Version SendGrid COMPLÈTE
+const sgMail = require('@sendgrid/mail');
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-    pool: true,
-    maxConnections: 5,
-    maxMessage: 100,
-    rateLimit: 14,
-    rateDelta: 1000,
+// ✅ Configuration SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-    connectionTimeout: 60000,
-    greetingTimeout: 30000,
-    socketTimeout: 60000,
-    tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
-    }
-});
+// ✅ Email par défaut (vérifié sur SendGrid)
+const DEFAULT_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SMTP_USER || 'noreply@pronostix.com';
+
+console.log('📧 SendGrid configuré avec:', DEFAULT_FROM_EMAIL);
 
 const sendVerificationEmail = async (userEmail, username, token) => {
     const startTime = Date.now();
-    console.log('🕐 DÉBUT envoi email:', new Date().toISOString());
+    console.log('🕐 DÉBUT envoi email SendGrid:', new Date().toISOString());
 
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
     console.log('📧 URL de vérification générée:', verificationUrl);
     console.log('📧 Token dans l\'email:', token);
 
-    const mailOptions = {
-        from: '"PronostiX" <noreply@pronostix.com>',
+    const msg = {
         to: userEmail,
+        from: {
+            email: DEFAULT_FROM_EMAIL,
+            name: 'PronostiX'
+        },
         subject: '📧 Vérifiez votre adresse email',
         html: `
             <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
@@ -53,35 +41,50 @@ const sendVerificationEmail = async (userEmail, username, token) => {
                 <p><small>Si le bouton ne fonctionne pas : ${verificationUrl}</small></p>
             </div>
         `,
-        priority: 'normal',
-        headers: {
-            'X-Mailer': `${process.env.APP_NAME || 'PronostiX'} v1.0`,
-            'X-Priority': '3' // Priorité normale
+        text: `
+            PronostiX - Vérification d'email
+            
+            Salut ${username} !
+            
+            Merci de vous être inscrit ! Cliquez sur ce lien pour vérifier votre email :
+            ${verificationUrl}
+            
+            Ce lien expire dans 24h.
+        `,
+        custom_args: {
+            user_id: 'new_user',
+            email_type: 'verification',
+            app_version: '1.0'
         }
     };
 
     try {
-        const result = transporter.sendMail(mailOptions);
+        const result = await sgMail.send(msg);
         const duration = Date.now() - startTime;
 
-        console.log('✅ Email envoyé avec succès!');
+        console.log('✅ Email SendGrid envoyé avec succès !');
         console.log(`🕐 Durée: ${duration}ms`);
-        console.log(`📧 MessageID: ${result.messageId}`);
+        console.log(`📧 MessageID: ${result[0].headers['x-message-id']}`);
         console.log(`👤 Destinataire: ${userEmail}`);
+
+        return {
+            messageId: result[0].headers['x-message-id'],
+            status: 'sent',
+            provider: 'sendgrid'
+        };
+
     } catch (error) {
         const duration = Date.now() - startTime;
 
-        console.error('❌ Erreur envoi email:');
+        console.error('❌ Erreur SendGrid:');
         console.error(`🕐 Durée avant erreur: ${duration}ms`);
         console.error(`👤 Destinataire: ${userEmail}`);
         console.error(`💥 Erreur:`, error.message);
 
         // ✅ Détails d'erreur pour debug
         if (error.response) {
-            console.error(`📡 Réponse SMTP: ${error.response}`);
-        }
-        if (error.responseCode) {
-            console.error(`🔢 Code erreur: ${error.responseCode}`);
+            console.error(`📡 Status: ${error.response.status}`);
+            console.error(`📧 Body:`, error.response.body);
         }
 
         throw error;
@@ -89,13 +92,19 @@ const sendVerificationEmail = async (userEmail, username, token) => {
 };
 
 const sendPasswordResetEmail = async (userEmail, username, token) => {
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`
+    const startTime = Date.now();
+    console.log('🕐 DÉBUT envoi reset password SendGrid:', new Date().toISOString());
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
     console.log('🔑 URL de réinitialisation générée:', resetUrl);
     console.log('🔑 Token dans l\'email:', token);
 
-    const mailOptions = {
-        from: '"PronostiX" <noreply@pronostix.com>',
+    const msg = {
         to: userEmail,
+        from: {
+            email: DEFAULT_FROM_EMAIL,
+            name: 'PronostiX'
+        },
         subject: '🔑 Réinitialisez votre mot de passe',
         html: `
             <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
@@ -111,16 +120,55 @@ const sendPasswordResetEmail = async (userEmail, username, token) => {
                 </div>
                 <p><small>Ce lien expire dans 1 heure.</small></p>
                 <p><small>Si le bouton ne fonctionne pas : ${resetUrl}</small></p>
-                <p>Si vous n’avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
+                <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
             </div>
-        `
+        `,
+        text: `
+            PronostiX - Réinitialisation de mot de passe
+            
+            Salut ${username} !
+            
+            Nous avons reçu une demande pour réinitialiser votre mot de passe.
+            
+            Cliquez sur ce lien pour choisir un nouveau mot de passe :
+            ${resetUrl}
+            
+            Ce lien expire dans 1 heure.
+            
+            Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
+        `,
+        custom_args: {
+            email_type: 'password_reset',
+            app_version: '1.0'
+        }
     };
 
-    return transporter.sendMail(mailOptions);
+    try {
+        const result = await sgMail.send(msg);
+        const duration = Date.now() - startTime;
+
+        console.log('✅ Email reset password SendGrid envoyé !');
+        console.log(`🕐 Durée: ${duration}ms`);
+        console.log(`📧 MessageID: ${result[0].headers['x-message-id']}`);
+
+        return {
+            messageId: result[0].headers['x-message-id'],
+            status: 'sent',
+            provider: 'sendgrid'
+        };
+
+    } catch (error) {
+        const duration = Date.now() - startTime;
+        console.error('❌ Erreur SendGrid reset password:');
+        console.error(`🕐 Durée avant erreur: ${duration}ms`);
+        console.error(error);
+        throw error;
+    }
 };
 
 const sendContactEmail = async (contactData) => {
     const { name, email, subject, category, message } = contactData;
+    const startTime = Date.now();
 
     console.log('📞 Nouveau message de contact reçu de:', email);
 
@@ -133,10 +181,16 @@ const sendContactEmail = async (contactData) => {
         other: 'Autre'
     };
 
-    const mailOptions = {
-        from: '"PronostiX Contact" <noreply@pronostix.com>',
-        to: process.env.SMTP_USER || 'pronostix.service@gmail.com', // Votre email
-        replyTo: email, // Pour répondre directement au client
+    const msg = {
+        to: process.env.SMTP_USER || process.env.SENDGRID_FROM_EMAIL || 'contact@pronostix.com',
+        from: {
+            email: DEFAULT_FROM_EMAIL,
+            name: 'PronostiX Contact'
+        },
+        replyTo: {
+            email: email,
+            name: name
+        },
         subject: `📞 [${categoryLabels[category]}] ${subject || 'Message de ' + name}`,
         html: `
             <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px;">
@@ -213,7 +267,6 @@ const sendContactEmail = async (contactData) => {
                 </div>
             </div>
         `,
-        // Version texte pour les clients email qui ne supportent pas HTML
         text: `
 Nouveau message de contact PronostiX
 
@@ -229,12 +282,59 @@ ${message}
 
 ---
 Pour répondre, utilisez directement: ${email}
-        `
+        `,
+        custom_args: {
+            email_type: 'contact',
+            sender_name: name,
+            category: category
+        }
     };
 
-    return transporter.sendMail(mailOptions);
+    try {
+        const result = await sgMail.send(msg);
+        const duration = Date.now() - startTime;
+
+        console.log('✅ Email contact SendGrid envoyé !');
+        console.log(`🕐 Durée: ${duration}ms`);
+        console.log(`📧 MessageID: ${result[0].headers['x-message-id']}`);
+        console.log(`👤 De: ${name} <${email}>`);
+
+        return {
+            messageId: result[0].headers['x-message-id'],
+            status: 'sent',
+            provider: 'sendgrid'
+        };
+
+    } catch (error) {
+        const duration = Date.now() - startTime;
+        console.error('❌ Erreur SendGrid contact:');
+        console.error(`🕐 Durée avant erreur: ${duration}ms`);
+        console.error(`👤 De: ${name} <${email}>`);
+        console.error(error);
+        throw error;
+    }
 };
 
+// ✅ Test de connexion SendGrid
+const testSendGridConnection = async () => {
+    try {
+        console.log('🧪 Test de connexion SendGrid...');
+        console.log('✅ SendGrid configuré et prêt !');
+        return true;
 
-// ✅ IMPORTANT : Vérifiez que cette ligne est bien présente
-module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendContactEmail };
+    } catch (error) {
+        console.error('❌ Erreur SendGrid:', error.message);
+        if (error.response) {
+            console.error('📧 Détails:', error.response.body);
+        }
+        return false;
+    }
+};
+
+// ✅ IMPORTANT : Export de toutes les fonctions
+module.exports = {
+    sendVerificationEmail,
+    sendPasswordResetEmail,
+    sendContactEmail,
+    testSendGridConnection
+};
