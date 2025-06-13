@@ -9,6 +9,7 @@ const DEFAULT_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SMTP_U
 
 console.log('📧 SendGrid configuré avec:', DEFAULT_FROM_EMAIL);
 
+// services/emailService.js - Template ANTI-SPAM
 const sendVerificationEmail = async (userEmail, username, token) => {
     const startTime = Date.now();
     console.log('🕐 DÉBUT envoi email SendGrid:', new Date().toISOString());
@@ -22,40 +23,163 @@ const sendVerificationEmail = async (userEmail, username, token) => {
         to: userEmail,
         from: {
             email: DEFAULT_FROM_EMAIL,
-            name: 'PronostiX'
+            name: 'Équipe PronostiX' // ✅ Nom humain
         },
-        subject: '📧 Vérifiez votre adresse email',
+        // ✅ Sujet anti-spam (pas d'emojis, pas de MAJUSCULES)
+        subject: 'Confirmez votre inscription sur PronostiX',
         html: `
-            <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-                <h1>🎯 PronostiX</h1>
-                <h2>Salut ${username} !</h2>
-                <p>Merci de vous être inscrit ! Cliquez sur le bouton ci-dessous pour vérifier votre email :</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${verificationUrl}" 
-                       style="background: #007bff; color: white; padding: 12px 24px; 
-                              text-decoration: none; border-radius: 6px; display: inline-block;">
-                        ✅ Vérifier mon email
-                    </a>
-                </div>
-                <p><small>Ce lien expire dans 24h</small></p>
-                <p><small>Si le bouton ne fonctionne pas : ${verificationUrl}</small></p>
-            </div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Confirmation d'inscription PronostiX</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+                
+                <!-- ✅ Container principal -->
+                <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #f4f4f4;">
+                    <tr>
+                        <td style="padding: 20px 0;">
+                            
+                            <!-- ✅ Email content -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                
+                                <!-- ✅ Header simple et professionnel -->
+                                <tr>
+                                    <td style="padding: 30px 30px 20px 30px; text-align: center; border-bottom: 2px solid #007bff;">
+                                        <h1 style="margin: 0; color: #007bff; font-size: 24px; font-weight: normal;">PronostiX</h1>
+                                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Plateforme de pronostics sportifs</p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- ✅ Contenu principal -->
+                                <tr>
+                                    <td style="padding: 30px;">
+                                        
+                                        <!-- ✅ Salutation personnalisée -->
+                                        <h2 style="margin: 0 0 20px 0; color: #333; font-size: 20px; font-weight: normal;">
+                                            Bonjour ${username},
+                                        </h2>
+                                        
+                                        <!-- ✅ Message clair et rassurant -->
+                                        <p style="margin: 0 0 20px 0; color: #555; line-height: 1.6; font-size: 16px;">
+                                            Merci d'avoir créé votre compte sur <strong>PronostiX</strong>. 
+                                            Pour finaliser votre inscription et accéder à votre espace personnel, 
+                                            nous devons confirmer votre adresse email.
+                                        </p>
+                                        
+                                        <p style="margin: 0 0 30px 0; color: #555; line-height: 1.6; font-size: 16px;">
+                                            Cliquez simplement sur le bouton ci-dessous pour activer votre compte :
+                                        </p>
+                                        
+                                        <!-- ✅ Bouton CTA simple -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    <a href="${verificationUrl}" 
+                                                       style="display: inline-block; padding: 15px 30px; background-color: #007bff; 
+                                                              color: #ffffff; text-decoration: none; border-radius: 5px; 
+                                                              font-size: 16px; font-weight: bold; text-align: center;">
+                                                        Activer mon compte
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- ✅ Lien alternatif -->
+                                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 30px 0;">
+                                            <p style="margin: 0 0 10px 0; color: #666; font-size: 14px; font-weight: bold;">
+                                                Le bouton ne fonctionne pas ?
+                                            </p>
+                                            <p style="margin: 0; color: #666; font-size: 14px; word-break: break-all;">
+                                                Copiez et collez ce lien dans votre navigateur :
+                                                <br><a href="${verificationUrl}" style="color: #007bff;">${verificationUrl}</a>
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- ✅ Informations rassurantes -->
+                                        <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 30px 0;">
+                                            <p style="margin: 0; color: #0056b3; font-size: 14px;">
+                                                <strong>Sécurité :</strong> Ce lien est valide pendant 24 heures et ne peut être utilisé qu'une seule fois.
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- ✅ Message de sécurité -->
+                                        <p style="margin: 30px 0 0 0; color: #666; font-size: 14px; line-height: 1.5;">
+                                            Si vous n'avez pas créé de compte sur PronostiX, vous pouvez ignorer cet email en toute sécurité. 
+                                            Aucune action ne sera effectuée sur votre adresse email.
+                                        </p>
+                                        
+                                    </td>
+                                </tr>
+                                
+                                <!-- ✅ Footer professionnel -->
+                                <tr>
+                                    <td style="padding: 20px 30px; background-color: #f8f9fa; border-top: 1px solid #dee2e6;">
+                                        
+                                        <!-- ✅ Contact -->
+                                        <p style="margin: 0 0 15px 0; color: #666; font-size: 12px; text-align: center;">
+                                            <strong>Équipe PronostiX</strong><br>
+                                            Email automatique - Ne pas répondre à ce message<br>
+                                            Pour toute question : <a href="mailto:${DEFAULT_FROM_EMAIL}" style="color: #007bff;">contact@pronostix.com</a>
+                                        </p>
+                                        
+                                        <!-- ✅ Légal -->
+                                        <p style="margin: 0; color: #999; font-size: 11px; text-align: center;">
+                                            © ${new Date().getFullYear()} PronostiX. Tous droits réservés.<br>
+                                            Cet email a été envoyé à ${userEmail} suite à votre inscription sur notre plateforme.
+                                        </p>
+                                        
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                            
+                        </td>
+                    </tr>
+                </table>
+                
+            </body>
+            </html>
         `,
         text: `
-            PronostiX - Vérification d'email
+            PronostiX - Confirmation d'inscription
             
-            Salut ${username} !
+            Bonjour ${username},
             
-            Merci de vous être inscrit ! Cliquez sur ce lien pour vérifier votre email :
+            Merci d'avoir créé votre compte sur PronostiX.
+            
+            Pour finaliser votre inscription, confirmez votre adresse email en cliquant sur ce lien :
             ${verificationUrl}
             
-            Ce lien expire dans 24h.
+            Ce lien est valide pendant 24 heures.
+            
+            Si vous n'avez pas créé de compte, ignorez cet email.
+            
+            Cordialement,
+            L'équipe PronostiX
+            
+            ---
+            © ${new Date().getFullYear()} PronostiX
+            Email envoyé à ${userEmail}
         `,
+        // ✅ Métadonnées anti-spam
         custom_args: {
-            user_id: 'new_user',
-            email_type: 'verification',
-            app_version: '1.0'
-        }
+            user_id: 'verification',
+            email_type: 'account_verification',
+            app_version: '1.0',
+            timestamp: new Date().toISOString()
+        },
+        // ✅ Tracking
+        tracking_settings: {
+            click_tracking: { enable: true },
+            open_tracking: { enable: true },
+            subscription_tracking: { enable: false }, // Pas de lien unsubscribe pour la vérification
+            ganalytics: { enable: false }
+        },
+        // ✅ Catégorie SendGrid
+        categories: ['account-verification', 'transactional']
     };
 
     try {
@@ -81,7 +205,6 @@ const sendVerificationEmail = async (userEmail, username, token) => {
         console.error(`👤 Destinataire: ${userEmail}`);
         console.error(`💥 Erreur:`, error.message);
 
-        // ✅ Détails d'erreur pour debug
         if (error.response) {
             console.error(`📡 Status: ${error.response.status}`);
             console.error(`📧 Body:`, error.response.body);
