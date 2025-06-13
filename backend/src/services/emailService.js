@@ -9,9 +9,25 @@ const transporter = nodemailer.createTransport({
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
+    pool: true,
+    maxConnections: 5,
+    maxMessage: 100,
+    rateLimit: 14,
+    rateDelta: 1000,
+
+    connectionTimeout: 60000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000,
+    tls: {
+        ciphers: 'SSLv3',
+        rejectUnauthorized: false
+    }
 });
 
 const sendVerificationEmail = async (userEmail, username, token) => {
+    const startTime = Date.now();
+    console.log('🕐 DÉBUT envoi email:', new Date().toISOString());
+
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
     console.log('📧 URL de vérification générée:', verificationUrl);
@@ -36,10 +52,40 @@ const sendVerificationEmail = async (userEmail, username, token) => {
                 <p><small>Ce lien expire dans 24h</small></p>
                 <p><small>Si le bouton ne fonctionne pas : ${verificationUrl}</small></p>
             </div>
-        `
+        `,
+        priority: 'normal',
+        headers: {
+            'X-Mailer': `${process.env.APP_NAME || 'PronostiX'} v1.0`,
+            'X-Priority': '3' // Priorité normale
+        }
     };
 
-    return transporter.sendMail(mailOptions);
+    try {
+        const result = transporter.sendMail(mailOptions);
+        const duration = Date.now() - startTime;
+
+        console.log('✅ Email envoyé avec succès!');
+        console.log(`🕐 Durée: ${duration}ms`);
+        console.log(`📧 MessageID: ${result.messageId}`);
+        console.log(`👤 Destinataire: ${userEmail}`);
+    } catch (error) {
+        const duration = Date.now() - startTime;
+
+        console.error('❌ Erreur envoi email:');
+        console.error(`🕐 Durée avant erreur: ${duration}ms`);
+        console.error(`👤 Destinataire: ${userEmail}`);
+        console.error(`💥 Erreur:`, error.message);
+
+        // ✅ Détails d'erreur pour debug
+        if (error.response) {
+            console.error(`📡 Réponse SMTP: ${error.response}`);
+        }
+        if (error.responseCode) {
+            console.error(`🔢 Code erreur: ${error.responseCode}`);
+        }
+
+        throw error;
+    }
 };
 
 const sendPasswordResetEmail = async (userEmail, username, token) => {
