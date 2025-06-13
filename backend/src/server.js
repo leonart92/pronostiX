@@ -1,3 +1,4 @@
+// server.js - AJOUT TRUST PROXY pour Render
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -20,6 +21,9 @@ const { logger } = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ✅ TRUST PROXY - OBLIGATOIRE POUR RENDER
+app.set('trust proxy', 1); // Trust first proxy (Render's load balancer)
+
 // Configuration MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -38,22 +42,36 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Rate limiting
+// ✅ Rate limiting corrigé pour Render
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limite chaque IP à 100 requêtes par windowMs
-    message: 'Trop de requêtes depuis cette IP, réessayez plus tard.',
+    message: {
+        success: false,
+        message: 'Trop de requêtes depuis cette IP, réessayez plus tard.'
+    },
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
+    // ✅ Configuration pour Render
+    trustProxy: true, // Important pour Render
+    keyGenerator: (req) => {
+        // Utilise la vraie IP derrière le proxy Render
+        return req.ip || req.connection.remoteAddress;
+    }
 });
 
 app.use('/api/', limiter);
 
-// Rate limiting strict pour auth
+// ✅ Rate limiting strict pour auth (corrigé)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 1000,
-    message: 'Trop de tentatives de connexion, réessayez plus tard.'
+    max: 20, // ← Réduit de 1000 à 20 (plus réaliste)
+    message: {
+        success: false,
+        message: 'Trop de tentatives de connexion, réessayez plus tard.'
+    },
+    trustProxy: true,
+    keyGenerator: (req) => req.ip || req.connection.remoteAddress
 });
 app.use('/api/auth', authLimiter);
 
@@ -75,7 +93,12 @@ app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime()
+        uptime: process.uptime(),
+        ip: req.ip, // ✅ Affiche la vraie IP pour debug
+        headers: {
+            'x-forwarded-for': req.headers['x-forwarded-for'],
+            'x-real-ip': req.headers['x-real-ip']
+        }
     });
 });
 
@@ -84,7 +107,8 @@ app.get('/', (req, res) => {
     res.json({
         message: '🏆 API Pronostics Sportifs',
         version: '1.0.0',
-        status: 'Running'
+        status: 'Running',
+        ip: req.ip // ✅ Debug IP
     });
 });
 
@@ -103,6 +127,7 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     logger.info(`🚀 Serveur démarré sur le port ${PORT}`);
     logger.info(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`🔒 Trust proxy: ${app.get('trust proxy')}`); // ✅ Confirme la config
 });
 
 // ========================================
@@ -112,7 +137,7 @@ app.listen(PORT, () => {
 const keepAlive = () => {
     // ⚠️ REMPLACE PAR TON URL RENDER ⚠️
     const appUrl = process.env.RENDER_EXTERNAL_URL ||
-        'https://pronostix.onrender.com'; // ← CHANGE ICI !
+        'https://ton-app-name.onrender.com'; // ← CHANGE ICI !
 
     const interval = 10 * 60 * 1000; // 10 minutes
 
