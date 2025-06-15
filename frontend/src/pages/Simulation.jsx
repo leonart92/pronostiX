@@ -202,7 +202,7 @@ const SimulationPage = () => {
     };
 
     // Vérifier si l'utilisateur a un abonnement actif
-    if (!user || user.subscriptionStatus !== 'active') {
+    if (!user) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-16">
                 <div className="container mx-auto px-4 text-center">

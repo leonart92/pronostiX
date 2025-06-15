@@ -86,19 +86,28 @@ const Navbar = () => {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo - ✅ Navigation intelligente */}
                     <Link to={logoDestination} className="flex items-center space-x-3 group">
-                        <div className="relative">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                                <span className="text-white font-bold text-lg">P</span>
-                            </div>
-                            <div className="absolute -inset-1 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
-                        </div>
-                        <div className="hidden sm:block">
-                            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                PronostiX
-                            </span>
-                            <div className="text-xs text-gray-500 dark:text-slate-400 -mt-1">
-                                Analyses Sportives
-                            </div>
+                        <div className="relative group-hover:scale-105 transition-all duration-300">
+                            <svg width="140" height="58" viewBox="0 0 120 50" className="h-12 w-auto">
+                                <defs>
+                                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style={{stopColor: '#3b82f6'}} />
+                                        <stop offset="100%" style={{stopColor: '#8b5cf6'}} />
+                                    </linearGradient>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <rect x="5" y="10" width="35" height="35" rx="8" fill="url(#logoGradient)" filter="url(#glow)"/>
+                                <path d="M12 32 L17 27 L22 30 L27 20 L33 25" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                <circle cx="33" cy="25" r="2" fill="white"/>
+                                <text x="48" y="22" fontFamily="system-ui, sans-serif" fontSize="16" fontWeight="700" fill="#1a202c" className="dark:fill-white">Pronosti</text>
+                                <text x="48" y="37" fontFamily="system-ui, sans-serif" fontSize="16" fontWeight="700" fill="url(#logoGradient)">X</text>
+                            </svg>
+                            <div className="absolute -inset-2 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl opacity-0 group-hover:opacity-30 blur-sm transition-all duration-300"></div>
                         </div>
                     </Link>
 
