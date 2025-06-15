@@ -41,6 +41,8 @@ import AdminPanel from './pages/Admin/AdminPanel';
 // Styles
 import './styles/global.css';
 
+import { Analytics } from "@vercel/analytics/react"
+
 // ✅ Composant pour redirection intelligente de la racine
 const RootRedirect = () => {
     // Cette logique sera gérée par le useAuth dans le Route
