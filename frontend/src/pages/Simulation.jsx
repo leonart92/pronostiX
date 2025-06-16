@@ -55,9 +55,6 @@ const SimulationPage = () => {
             const response = await pronosticService.getPronostics(filters);
 
             if (response.success) {
-                console.log('📊 Tous les pronostics:', response.data.pronostics.length);
-                console.log('📋 Résultats trouvés:', response.data.pronostics.map(p => p.result));
-                console.log('📋 Premiers pronostics:', response.data.pronostics.slice(0, 3));
 
                 // Filtrer les pronostics terminés et par cotes
                 const filteredPronostics = response.data.pronostics.filter(p =>

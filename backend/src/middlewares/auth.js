@@ -114,7 +114,6 @@ const requireActiveSubscription = (req, res, next) => {
     }
 
     if (!req.user.hasActiveSubscription()) {
-        console.log('❌ REQUIRE_SUB - Pas d\'abonnement actif');
 
         return res.status(403).json({
             success: false,

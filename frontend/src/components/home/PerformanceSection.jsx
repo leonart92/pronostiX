@@ -17,7 +17,6 @@ const PerformanceSection = ({ sharedPronostics = null }) => {
                 setLoading(true);
                 setError(null);
 
-                console.log('🔍 PerformanceSection - Analyse des données...');
 
                 let pronosticsToUse = [];
 

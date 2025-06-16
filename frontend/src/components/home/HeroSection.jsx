@@ -31,9 +31,6 @@ const HeroSection = () => {
                 
                 // ✅ Accéder aux données dans response.data.data ou response.data
                 const statsData = response?.data?.data || response?.data || response;
-                
-                console.log('📊 Stats globales reçues:', response);
-                console.log('📊 Stats data extraites:', statsData);
 
                 if (statsData) {
                     setGlobalStats({

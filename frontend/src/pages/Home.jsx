@@ -431,7 +431,6 @@ const VictoryWallSection = () => {
                 });
 
                 const allPronostics = response?.data?.pronostics || response?.pronostics || response?.data || [];
-                console.log('🏆 Pronostics trouvés:', allPronostics.length);
 
                 const winners = allPronostics.filter(prono => prono.result === 'won');
                 if (winners.length > 0) {

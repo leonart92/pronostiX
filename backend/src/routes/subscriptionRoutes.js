@@ -64,18 +64,9 @@ router.post('/create-checkout', authenticate, [
         .withMessage('URL d\'annulation invalide')
 ], asyncHandler(async (req, res) => {
 
-    // 🔍 DEBUG
-    console.log('=== DEBUG CREATE-CHECKOUT ===');
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('Données reçues:', req.body);
-    console.log('User connecté:', req.user?.email);
-    console.log('Plan reçu:', req.body.plan);
-    console.log('successUrl reçu:', req.body.successUrl);
-    console.log('cancelUrl reçu:', req.body.cancelUrl);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log('❌ Erreurs de validation:', errors.array());
         return res.status(400).json({
             success: false,
             message: 'Erreurs de validation',
@@ -83,8 +74,6 @@ router.post('/create-checkout', authenticate, [
             errors: errors.array()
         });
     }
-    console.log('✅ Validation réussie');
-    console.log('===============================');
 
     const { plan, successUrl, cancelUrl } = req.body;
     const user = req.user;

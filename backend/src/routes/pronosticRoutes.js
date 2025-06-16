@@ -72,13 +72,6 @@ router.get('/', optionalAuth, asyncHandler(async (req, res) => {
         sort = 'date_desc'
     } = req.query;
 
-    // 🔍 Debug: Logger les paramètres reçus
-    console.log('📋 GET /api/pronostics appelé:', {
-        userId: req.user?._id,
-        userRole: req.user?.role,
-        subscriptionStatus: req.user?.subscriptionStatus,
-        params: req.query
-    });
 
     // Construction du filtre
     let filter = { isVisible: true };
@@ -102,7 +95,6 @@ router.get('/', optionalAuth, asyncHandler(async (req, res) => {
     // ❌ SUPPRIMÉ : if (!req.user || !req.user.hasActiveSubscription()) { filter.isFree = true; }
     // ✅ Le frontend décidera quoi afficher selon l'abonnement
 
-    console.log('🔍 Filtres MongoDB construits:', JSON.stringify(filter, null, 2));
 
     // Tri
     let sortOption = {};
@@ -123,16 +115,6 @@ router.get('/', optionalAuth, asyncHandler(async (req, res) => {
 
     const total = await Pronostic.countDocuments(filter);
     const totalPages = Math.ceil(total / parseInt(limit));
-
-    // 🔍 Debug: Logger les résultats
-    console.log(`📊 ${pronostics.length} pronostics trouvés sur ${total} total`);
-    console.log('📋 Pronostics retournés:', pronostics.map(p => ({
-        id: p._id,
-        homeTeam: p.homeTeam,
-        awayTeam: p.awayTeam,
-        isFree: p.isFree,
-        sport: p.sport
-    })));
 
     res.json({
         success: true,
@@ -170,15 +152,6 @@ router.get('/:id', optionalAuth, asyncHandler(async (req, res) => {
     // 🔧 POINT CLÉ : Retourner TOUTES les données !
     // Le frontend décidera quoi afficher selon l'abonnement
     // ❌ SUPPRIMÉ : Masquage conditionnel des détails selon l'abonnement
-
-    console.log('📋 Pronostic retourné:', {
-        id: pronostic._id,
-        homeTeam: pronostic.homeTeam,
-        awayTeam: pronostic.awayTeam,
-        isFree: pronostic.isFree,
-        hasPrediction: !!pronostic.prediction,
-        hasAnalysis: !!pronostic.analysis
-    });
 
     res.json({
         success: true,

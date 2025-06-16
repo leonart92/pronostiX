@@ -133,7 +133,6 @@ async function createTestPronostics() {
         // Créer les nouveaux pronostics
         const createdPronostics = await Pronostic.insertMany(testPronostics);
 
-        console.log(`✅ ${createdPronostics.length} pronostics de test créés :`);
 
         createdPronostics.forEach((p, index) => {
             console.log(`${index + 1}. ${p.homeTeam} vs ${p.awayTeam} (${p.isFree ? 'GRATUIT' : 'PREMIUM'})`);
