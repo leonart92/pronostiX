@@ -369,14 +369,16 @@ const PronosticsList = () => {
         return date.toLocaleDateString('fr-FR', {
             weekday: 'long',
             day: 'numeric',
-            month: 'long'
+            month: 'long',
+            timeZone: 'Europe/Paris'
         });
     };
 
     const formatTime = (dateString) => {
         return new Date(dateString).toLocaleTimeString('fr-FR', {
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            timeZone: 'Europe/Paris'
         });
     };
 

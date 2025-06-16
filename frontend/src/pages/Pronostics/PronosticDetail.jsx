@@ -80,9 +80,9 @@ const PronosticDetail = () => {
         const diffInHours = (date - now) / (1000 * 60 * 60);
 
         if (diffInHours > 0 && diffInHours < 24) {
-            return `Aujourd'hui à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+            return `Aujourd'hui à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit',timeZone: 'Europe/Paris'})}`;
         } else if (diffInHours >= 24 && diffInHours < 48) {
-            return `Demain à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+            return `Demain à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris'})}`;
         }
 
         return date.toLocaleDateString('fr-FR', {
@@ -90,7 +90,8 @@ const PronosticDetail = () => {
             day: 'numeric',
             month: 'long',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            timeZone: 'Europe/Paris'
         });
     };
 
