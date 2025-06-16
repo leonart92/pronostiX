@@ -1,4 +1,4 @@
-// src/pages/Pronostics/PronosticsList.jsx - VERSION AVEC TOGGLE HISTORIQUE
+// src/pages/Pronostics/PronosticsList.jsx - VERSION MOBILE OPTIMISÉE
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -13,11 +13,7 @@ const PronosticsList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedPeriod, setSelectedPeriod] = useState('week');
-
-    // ✨ NOUVEAU : Toggle À venir / Historique
     const [viewMode, setViewMode] = useState(searchParams.get('view') || 'upcoming');
-
-    // ✨ NOUVEAU : Stats pour l'historique
     const [historyStats, setHistoryStats] = useState({
         totalBets: 0,
         wonBets: 0,
@@ -33,7 +29,6 @@ const PronosticsList = () => {
         limit: 50
     });
 
-    // Filtres - ✨ MODIFIÉ pour prendre en compte le viewMode
     const [filters, setFilters] = useState({
         sport: searchParams.get('sport') || '',
         status: searchParams.get('status') || '',
@@ -47,36 +42,29 @@ const PronosticsList = () => {
 
     const [showFilters, setShowFilters] = useState(false);
 
-    // Fonction pour vérifier l'accès aux pronostics
+    // 📱 NOUVEAU : Hook pour détecter mobile
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Toutes tes fonctions existantes (fetchPronostics, etc.) restent identiques...
     const canViewPronostic = (pronostic) => {
-        // Si le pronostic est gratuit, tout le monde peut le voir
-        if (pronostic.isFree) {
-            return true;
-        }
-
-        // Si l'utilisateur n'est pas connecté
-        if (!isAuthenticated || !user) {
-            return false;
-        }
-
-        // Si l'utilisateur a un abonnement actif
-        if (user.subscriptionStatus === 'active') {
-            return true;
-        }
-
-        // Si l'utilisateur est admin
-        if (user.role === 'admin') {
-            return true;
-        }
-
+        if (pronostic.isFree) return true;
+        if (!isAuthenticated || !user) return false;
+        if (user.subscriptionStatus === 'active') return true;
+        if (user.role === 'admin') return true;
         return false;
     };
 
-    // ✨ NOUVEAU : Récupérer les vraies stats depuis l'API
     const fetchHistoryStats = async () => {
         try {
             const response = await api.get('/pronostics/stats/global');
-
             if (response.data.success) {
                 const stats = response.data.data;
                 setHistoryStats({
@@ -89,21 +77,11 @@ const PronosticsList = () => {
             }
         } catch (err) {
             console.error('Erreur lors du chargement des stats:', err);
-            setHistoryStats({
-                totalBets: 0,
-                wonBets: 0,
-                winRate: 0,
-                totalProfit: 0,
-                roi: 0
-            });
         }
     };
 
-    // ✨ MODIFIÉ pour inclure les stats
     useEffect(() => {
         fetchPronostics();
-
-        // Récupérer les stats pour l'historique
         if (viewMode === 'history') {
             fetchHistoryStats();
         }
@@ -120,16 +98,13 @@ const PronosticsList = () => {
                 ...filters
             };
 
-            // ✨ NOUVEAU : Gestion des filtres selon le mode
             if (viewMode === 'upcoming') {
-                // Mode "À venir" : garder upcoming = true
                 params.upcoming = 'true';
             } else {
-                // Mode "Historique" : supprimer upcoming pour avoir tous les résultats
                 delete params.upcoming;
             }
 
-            // Ajouter les filtres de période
+            // Gestion des périodes...
             if (selectedPeriod === 'week') {
                 const today = new Date();
                 if (viewMode === 'upcoming') {
@@ -138,7 +113,6 @@ const PronosticsList = () => {
                     params.dateFrom = today.toISOString().split('T')[0];
                     params.dateTo = nextWeek.toISOString().split('T')[0];
                 } else {
-                    // Pour l'historique : 7 derniers jours
                     const lastWeek = new Date();
                     lastWeek.setDate(today.getDate() - 7);
                     params.dateFrom = lastWeek.toISOString().split('T')[0];
@@ -152,7 +126,6 @@ const PronosticsList = () => {
                     params.dateFrom = today.toISOString().split('T')[0];
                     params.dateTo = nextMonth.toISOString().split('T')[0];
                 } else {
-                    // Pour l'historique : 30 derniers jours
                     const lastMonth = new Date();
                     lastMonth.setDate(today.getDate() - 30);
                     params.dateFrom = lastMonth.toISOString().split('T')[0];
@@ -160,7 +133,6 @@ const PronosticsList = () => {
                 }
             }
 
-            // Nettoyer les paramètres vides
             Object.keys(params).forEach(key => {
                 if (!params[key]) delete params[key];
             });
@@ -169,10 +141,7 @@ const PronosticsList = () => {
 
             if (response.data.success) {
                 let pronostics = response.data.data.pronostics || [];
-
-                // ✨ NOUVEAU : Filtrage côté frontend pour l'historique
                 if (viewMode === 'history') {
-                    // Ne garder que les paris terminés (non pending)
                     pronostics = pronostics.filter(p =>
                         ['won', 'lost', 'void', 'push'].includes(p.result)
                     );
@@ -195,16 +164,12 @@ const PronosticsList = () => {
         }
     };
 
-    // ✨ NOUVEAU : Changer le mode de vue
     const changeViewMode = (mode) => {
         setViewMode(mode);
-
-        // Mettre à jour les filtres selon le mode
         const newFilters = { ...filters };
         if (mode === 'upcoming') {
             newFilters.upcoming = 'true';
             newFilters.sort = 'date_asc';
-            // Réinitialiser le filtre status pour upcoming
             newFilters.status = '';
         } else {
             delete newFilters.upcoming;
@@ -212,11 +177,9 @@ const PronosticsList = () => {
         }
         setFilters(newFilters);
 
-        // Mettre à jour l'URL
         const params = new URLSearchParams(searchParams);
         params.set('view', mode);
         setSearchParams(params);
-
         setPagination(prev => ({ ...prev, currentPage: 1 }));
     };
 
@@ -224,7 +187,6 @@ const PronosticsList = () => {
         const updatedFilters = { ...filters, ...newFilters };
         setFilters(updatedFilters);
 
-        // Mettre à jour l'URL
         const params = new URLSearchParams();
         params.set('view', viewMode);
         Object.keys(updatedFilters).forEach(key => {
@@ -233,7 +195,6 @@ const PronosticsList = () => {
             }
         });
         setSearchParams(params);
-
         setPagination(prev => ({ ...prev, currentPage: 1 }));
     };
 
@@ -253,107 +214,73 @@ const PronosticsList = () => {
         const params = new URLSearchParams();
         params.set('view', viewMode);
         setSearchParams(params);
-
         setPagination(prev => ({ ...prev, currentPage: 1 }));
     };
 
-    // ✨ NOUVEAU : Composant Stats Historique (📍 TU PEUX MODIFIER ICI)
+    // 📱 OPTIMISÉ : Stats Historique Responsive
     const HistoryStats = () => (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">
-                📊 Statistiques globales de l'historique
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-slate-100 mb-3 sm:mb-4">
+                📊 Statistiques globales
             </h3>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-4 gap-4'}`}>
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {historyStats.totalBets}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
-                        Paris terminés
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400">
+                        {isMobile ? 'Paris' : 'Paris terminés'}
                     </div>
                 </div>
 
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
                         {historyStats.winRate.toFixed(1)}%
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
-                        Taux de réussite
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400">
+                        {isMobile ? 'Réussite' : 'Taux de réussite'}
                     </div>
                 </div>
 
                 <div className="text-center">
-                    <div className={`text-2xl font-bold ${
+                    <div className={`text-xl sm:text-2xl font-bold ${
                         historyStats.totalProfit >= 0
                             ? 'text-green-600 dark:text-green-400'
                             : 'text-red-600 dark:text-red-400'
                     }`}>
-                        {historyStats.totalProfit >= 0 ? '+' : ''}{historyStats.totalProfit.toFixed(2)}€
+                        {historyStats.totalProfit >= 0 ? '+' : ''}{historyStats.totalProfit.toFixed(1)}€
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
-                        Profit total
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400">
+                        {isMobile ? 'Profit' : 'Profit total'}
                     </div>
                 </div>
 
                 <div className="text-center">
-                    <div className={`text-2xl font-bold ${
+                    <div className={`text-xl sm:text-2xl font-bold ${
                         historyStats.roi >= 0
                             ? 'text-green-600 dark:text-green-400'
                             : 'text-red-600 dark:text-red-400'
                     }`}>
                         {historyStats.roi >= 0 ? '+' : ''}{historyStats.roi.toFixed(1)}%
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400">
                         ROI
                     </div>
                 </div>
             </div>
 
-            <div className="mt-4 text-center">
-                <p className="text-sm text-gray-600 dark:text-slate-400">
-                    {historyStats.wonBets} paris gagnés sur {historyStats.totalBets} terminés
-                </p>
-            </div>
+            {!isMobile && (
+                <div className="mt-4 text-center">
+                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                        {historyStats.wonBets} paris gagnés sur {historyStats.totalBets} terminés
+                    </p>
+                </div>
+            )}
         </div>
     );
 
-    // Organiser les pronostics par date - ✨ MODIFIÉ pour l'ordre historique
-    const organizeByDate = () => {
-        const grouped = pronostics.reduce((acc, pronostic) => {
-            const date = new Date(pronostic.matchDate).toDateString();
-            if (!acc[date]) {
-                acc[date] = [];
-            }
-            acc[date].push(pronostic);
-            return acc;
-        }, {});
-
-        // ✨ NOUVEAU : Trier les dates selon le mode
-        const sortedDates = Object.keys(grouped).sort((a, b) => {
-            if (viewMode === 'history') {
-                // Pour l'historique : plus récent en premier (ordre décroissant)
-                return new Date(b) - new Date(a);
-            } else {
-                // Pour "À venir" : plus proche en premier (ordre croissant)
-                return new Date(a) - new Date(b);
-            }
-        });
-
-        return sortedDates.map(date => ({
-            date,
-            pronostics: grouped[date].sort((a, b) => {
-                if (viewMode === 'history') {
-                    // Pour l'historique : plus récent en premier dans la même journée
-                    return new Date(b.matchDate) - new Date(a.matchDate);
-                } else {
-                    // Pour "À venir" : plus tôt en premier dans la même journée
-                    return new Date(a.matchDate) - new Date(b.matchDate);
-                }
-            })
-        }));
-    };
-
+    // Fonctions de formatage
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const today = new Date();
@@ -367,9 +294,9 @@ const PronosticsList = () => {
         }
 
         return date.toLocaleDateString('fr-FR', {
-            weekday: 'long',
+            weekday: isMobile ? 'short' : 'long',
             day: 'numeric',
-            month: 'long',
+            month: isMobile ? 'short' : 'long',
             timeZone: 'Europe/Paris'
         });
     };
@@ -395,7 +322,7 @@ const PronosticsList = () => {
         return (
             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${className}`}>
                 <span className="mr-1">{icon}</span>
-                {label}
+                {isMobile && ['pending', 'won', 'lost'].includes(result) ? icon : label}
             </span>
         );
     };
@@ -424,9 +351,105 @@ const PronosticsList = () => {
         return colors[sport] || colors['other'];
     };
 
+    // 📱 ULTRA OPTIMISÉE : Card Mobile First
     const TimelinePronosticCard = ({ pronostic }) => {
         const canView = canViewPronostic(pronostic);
 
+        if (isMobile) {
+            // 📱 VERSION MOBILE COMPACTE
+            return (
+                <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-3 space-y-3">
+                    {/* Header mobile : Heure + Sport + Status */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-sm font-bold text-gray-900 dark:text-slate-100">
+                                {formatTime(pronostic.matchDate)}
+                            </div>
+                            <div className="text-lg">{getSportIcon(pronostic.sport)}</div>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                            {getStatusBadge(pronostic.result)}
+                            {pronostic.priority === 'high' && <span className="text-lg">🔥</span>}
+                        </div>
+                    </div>
+
+                    {/* Match */}
+                    <div>
+                        <h3 className="font-bold text-base text-gray-900 dark:text-slate-100 leading-tight">
+                            {pronostic.homeTeam} <span className="text-gray-400">vs</span> {pronostic.awayTeam}
+                        </h3>
+                        <p className="text-xs text-gray-600 dark:text-slate-400">{pronostic.league}</p>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-1">
+                            {pronostic.isFree ? (
+                                <span className="px-2 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300 rounded text-xs font-medium">
+                                    🆓
+                                </span>
+                            ) : (
+                                <span className="px-2 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded text-xs font-medium">
+                                    💎
+                                </span>
+                            )}
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${getSportColor(pronostic.sport)}`}>
+                                {pronostic.sport?.charAt(0).toUpperCase()}
+                            </span>
+                        </div>
+                        {canView && pronostic.odds && (
+                            <div className="text-sm">
+                                <span className="text-gray-600 dark:text-slate-400">Cote: </span>
+                                <span className="font-bold text-blue-600 dark:text-blue-400">{pronostic.odds}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Pronostic mobile */}
+                    {canView && pronostic.prediction ? (
+                        <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase">
+                                    {pronostic.predictionType?.replace('_', ' ')}
+                                </span>
+                                <span className="text-xs text-blue-600 dark:text-blue-400">
+                                    {pronostic.confidence}%
+                                </span>
+                            </div>
+                            <p className="font-semibold text-blue-900 dark:text-blue-100 text-sm">
+                                {pronostic.prediction}
+                            </p>
+                        </div>
+                    ) : canView && !pronostic.prediction ? (
+                        <div className="bg-yellow-50 dark:bg-yellow-900/30 rounded-lg p-2 text-center">
+                            <span className="text-xs text-yellow-600 dark:text-yellow-400">⚠️ En préparation</span>
+                        </div>
+                    ) : (
+                        <div className="bg-gray-100 dark:bg-slate-700 rounded-lg p-2 text-center">
+                            <span className="text-xs text-gray-500 dark:text-slate-400">🔒 Abonnement requis</span>
+                        </div>
+                    )}
+
+                    {/* Action mobile */}
+                    <div className="flex justify-center">
+                        {canView ? (
+                            <Link
+                                to={`/pronostics/${pronostic._id}`}
+                                className="btn btn-outline btn-sm w-full text-center"
+                            >
+                                Voir détail
+                            </Link>
+                        ) : (
+                            <Link to="/pricing" className="btn btn-primary btn-sm w-full text-center">
+                                💎 S'abonner
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // 💻 VERSION DESKTOP (inchangée)
         return (
             <div className="flex items-start space-x-4 p-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-all duration-200">
                 {/* Heure et sport */}
@@ -485,9 +508,6 @@ const PronosticsList = () => {
                                 <span className="text-blue-700 dark:text-blue-300">
                                     Cote: <strong>{pronostic.odds}</strong>
                                 </span>
-                                {/*} <span className="text-blue-700 dark:text-blue-300">
-                                    Mise: <strong>{pronostic.stake}/10</strong>
-                                </span> */}
                             </div>
                             {pronostic.analysis && (
                                 <div className="mt-2 text-sm text-blue-800 dark:text-blue-200">
@@ -518,7 +538,6 @@ const PronosticsList = () => {
                         <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-3 mb-3">
                             <p className="text-xs text-gray-600 dark:text-slate-400 mb-1">Résultat final</p>
                             <p className="font-medium text-gray-900 dark:text-slate-100">{pronostic.actualResult}</p>
-
                         </div>
                     )}
 
@@ -545,117 +564,172 @@ const PronosticsList = () => {
         );
     };
 
+    // Organiser les pronostics par date
+    const organizeByDate = () => {
+        const grouped = pronostics.reduce((acc, pronostic) => {
+            const date = new Date(pronostic.matchDate).toDateString();
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(pronostic);
+            return acc;
+        }, {});
+
+        const sortedDates = Object.keys(grouped).sort((a, b) => {
+            if (viewMode === 'history') {
+                return new Date(b) - new Date(a);
+            } else {
+                return new Date(a) - new Date(b);
+            }
+        });
+
+        return sortedDates.map(date => ({
+            date,
+            pronostics: grouped[date].sort((a, b) => {
+                if (viewMode === 'history') {
+                    return new Date(b.matchDate) - new Date(a.matchDate);
+                } else {
+                    return new Date(a.matchDate) - new Date(b.matchDate);
+                }
+            })
+        }));
+    };
+
     const groupedPronostics = organizeByDate();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header avec contrôles */}
-                <div className="mb-8">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100 mb-2">
-                                {viewMode === 'upcoming' ? '📅 Planning des pronostics' : '📊 Historique des pronostics'}
-                            </h1>
-                            <p className="text-gray-600 dark:text-slate-400">
-                                {pagination.total} pronostic{pagination.total > 1 ? 's' : ''} •
-                                {viewMode === 'upcoming' ? ' Vue organisée par dates' : ' Résultats passés'}
-                            </p>
-                        </div>
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-4 sm:py-8">
+            <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-8">
+                {/* 📱 HEADER MOBILE OPTIMISÉ */}
+                <div className="mb-6 sm:mb-8">
+                    {/* Titre et description */}
+                    <div className="mb-4 sm:mb-6">
+                        <h1 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-slate-100 mb-1 sm:mb-2">
+                            {viewMode === 'upcoming' ?
+                                (isMobile ? '📅 Pronostics' : '📅 Planning des pronostics') :
+                                (isMobile ? '📊 Historique' : '📊 Historique des pronostics')
+                            }
+                        </h1>
+                        <p className="text-sm sm:text-base text-gray-600 dark:text-slate-400">
+                            {pagination.total} pronostic{pagination.total > 1 ? 's' : ''}
+                            {!isMobile && ` • ${viewMode === 'upcoming' ? 'Vue organisée par dates' : 'Résultats passés'}`}
+                        </p>
+                    </div>
 
-                        <div className="mt-4 md:mt-0 flex flex-wrap items-center gap-3">
-                            {/* ✨ NOUVEAU : Toggle À venir / Historique - Style épuré et cohérent */}
-                            <div className="inline-flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 shadow-sm">
+                    {/* 📱 CONTRÔLES MOBILE OPTIMISÉS */}
+                    <div className="space-y-3">
+                        {/* Toggle À venir / Historique - Stack sur mobile */}
+                        <div className="flex justify-center">
+                            <div className="inline-flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 shadow-sm w-full max-w-sm">
                                 {[
-                                    { key: 'upcoming', label: 'À venir', icon: '📅' },
-                                    { key: 'history', label: 'Historique', icon: '📊' }
+                                    { key: 'upcoming', label: isMobile ? 'À venir' : 'À venir', icon: '📅' },
+                                    { key: 'history', label: isMobile ? 'Historique' : 'Historique', icon: '📊' }
                                 ].map(view => (
                                     <button
                                         key={view.key}
                                         onClick={() => changeViewMode(view.key)}
-                                        className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                                        className={`flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 flex-1 ${
                                             viewMode === view.key
                                                 ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                                                : 'text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100'
+                                                : 'text-gray-600 dark:text-slate-300'
                                         }`}
                                     >
-                                        <span className="mr-2">{view.icon}</span>
+                                        <span className="mr-1.5">{view.icon}</span>
                                         {view.label}
                                     </button>
                                 ))}
                             </div>
+                        </div>
 
-                            {/* Sélecteur de période - Style cohérent */}
-                            <div className="inline-flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 shadow-sm">
-                                {[
-                                    { key: 'week', label: '7 jours', icon: '📅' },
-                                    { key: 'month', label: '30 jours', icon: '🗓️' },
-                                    { key: 'all', label: 'Tous', icon: '📊' }
-                                ].map(period => (
-                                    <button
-                                        key={period.key}
-                                        onClick={() => setSelectedPeriod(period.key)}
-                                        className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                                            selectedPeriod === period.key
-                                                ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-slate-100 shadow-sm'
-                                                : 'text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100'
-                                        }`}
-                                    >
-                                        <span className="mr-1.5">{period.icon}</span>
-                                        {period.label}
-                                    </button>
-                                ))}
+                        {/* Période + Filtres - Ligne mobile */}
+                        <div className="flex items-center space-x-2">
+                            {/* Sélecteur de période - Mobile compact */}
+                            <div className="flex-1">
+                                <div className="inline-flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 shadow-sm w-full">
+                                    {[
+                                        { key: 'week', label: '7j', icon: '📅' },
+                                        { key: 'month', label: '30j', icon: '🗓️' },
+                                        { key: 'all', label: 'Tous', icon: '📊' }
+                                    ].map(period => (
+                                        <button
+                                            key={period.key}
+                                            onClick={() => setSelectedPeriod(period.key)}
+                                            className={`flex items-center justify-center px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-200 flex-1 ${
+                                                selectedPeriod === period.key
+                                                    ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-slate-100 shadow-sm'
+                                                    : 'text-gray-600 dark:text-slate-300'
+                                            }`}
+                                        >
+                                            {isMobile ? (
+                                                <>
+                                                    <span className="mr-1">{period.icon}</span>
+                                                    {period.label}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="mr-1.5">{period.icon}</span>
+                                                    {period.label}
+                                                </>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            {/* Bouton Filtres - Style cohérent */}
+                            {/* Bouton Filtres - Compact mobile */}
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 shadow-sm ${
+                                className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 shadow-sm ${
                                     showFilters
                                         ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
-                                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300'
                                 }`}
                             >
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
                                 </svg>
-                                Filtres
-                                <svg className={`w-3 h-3 ml-1.5 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
+                                {!isMobile && (
+                                    <>
+                                        <span className="ml-2">Filtres</span>
+                                        <svg className={`w-3 h-3 ml-1.5 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </>
+                                )}
                             </button>
 
-                            {!isAuthenticated && (
-                                <Link to="/register" className="btn btn-primary">
-                                    Inscription gratuite
+                            {/* Bouton inscription - Seulement sur desktop */}
+                            {!isAuthenticated && !isMobile && (
+                                <Link to="/register" className="btn btn-primary btn-sm whitespace-nowrap">
+                                    Inscription
                                 </Link>
                             )}
                         </div>
-                    </div>
 
-                    {/* Filtres rapides */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {['football', 'tennis', 'basketball'].map(sport => (
-                            <button
-                                key={sport}
-                                onClick={() => updateFilters({ sport: filters.sport === sport ? '' : sport })}
-                                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                                    filters.sport === sport
-                                        ? getSportColor(sport)
-                                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-600'
-                                }`}
-                            >
-                                <span className="mr-1">{getSportIcon(sport)}</span>
-                                {sport.charAt(0).toUpperCase() + sport.slice(1)}
-                            </button>
-                        ))}
+                        {/* 📱 FILTRES RAPIDES - Mobile horizontal scroll */}
+                        <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+                            {['football', 'tennis', 'basketball'].map(sport => (
+                                <button
+                                    key={sport}
+                                    onClick={() => updateFilters({ sport: filters.sport === sport ? '' : sport })}
+                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+                                        filters.sport === sport
+                                            ? getSportColor(sport)
+                                            : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
+                                    }`}
+                                >
+                                    <span className="mr-1">{getSportIcon(sport)}</span>
+                                    {sport.charAt(0).toUpperCase() + sport.slice(1)}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                {/* Filtres détaillés */}
+                {/* 📱 FILTRES DÉTAILLÉS RESPONSIFS */}
                 {showFilters && (
-                    <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow p-6 mb-8">
-                        <div className="grid md:grid-cols-4 gap-4 mb-4">
+                    <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+                        <div className={`grid gap-3 sm:gap-4 mb-4 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-4'}`}>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Sport</label>
                                 <select
@@ -715,43 +789,66 @@ const PronosticsList = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-between">
                             <button
                                 onClick={resetFilters}
                                 className="text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 transition-colors"
                             >
-                                Réinitialiser les filtres
+                                Réinitialiser
                             </button>
+                            {isMobile && (
+                                <button
+                                    onClick={() => setShowFilters(false)}
+                                    className="btn btn-outline btn-sm"
+                                >
+                                    Fermer
+                                </button>
+                            )}
                         </div>
                     </div>
                 )}
 
-                {/* ✨ NOUVEAU : Affichage des stats pour l'historique */}
+                {/* Stats pour l'historique */}
                 {viewMode === 'history' && <HistoryStats />}
 
-                {/* Message pour utilisateurs non abonnés (sauf admin) */}
+                {/* Message pour utilisateurs non abonnés */}
                 {isAuthenticated && user?.subscriptionStatus !== 'active' && user?.role !== 'admin' && (
-                    <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
-                        <div className="flex items-center">
-                            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div className="flex-1">
-                                <p className="text-blue-800 dark:text-blue-200 font-medium">Accès limité aux pronostics gratuits</p>
-                                <p className="text-blue-700 dark:text-blue-300 text-sm">Abonnez-vous pour accéder à tous nos pronostics premium</p>
+                    <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 mb-6 sm:mb-8">
+                        <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'items-center'}`}>
+                            <div className="flex items-start">
+                                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div className="flex-1">
+                                    <p className="text-blue-800 dark:text-blue-200 font-medium text-sm sm:text-base">
+                                        {isMobile ? 'Accès limité' : 'Accès limité aux pronostics gratuits'}
+                                    </p>
+                                    <p className="text-blue-700 dark:text-blue-300 text-xs sm:text-sm">
+                                        {isMobile ? 'Abonnez-vous pour tout voir' : 'Abonnez-vous pour accéder à tous nos pronostics premium'}
+                                    </p>
+                                </div>
                             </div>
-                            <Link to="/pricing" className="btn btn-primary ml-4">
+                            <Link to="/pricing" className={`btn btn-primary ${isMobile ? 'w-full' : 'ml-4'} btn-sm`}>
                                 Voir les plans
                             </Link>
                         </div>
                     </div>
                 )}
 
-                {/* Timeline des pronostics */}
+                {/* Bouton inscription mobile */}
+                {!isAuthenticated && isMobile && (
+                    <div className="mb-6">
+                        <Link to="/register" className="btn btn-primary w-full">
+                            🎯 Inscription gratuite
+                        </Link>
+                    </div>
+                )}
+
+                {/* CONTENU PRINCIPAL */}
                 {loading ? (
                     <div className="text-center py-12">
                         <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-300 dark:border-slate-600 border-t-blue-600 mb-4"></div>
-                        <p className="text-gray-600 dark:text-slate-400">Chargement du planning...</p>
+                        <p className="text-gray-600 dark:text-slate-400">Chargement...</p>
                     </div>
                 ) : error ? (
                     <div className="text-center py-12">
@@ -766,25 +863,26 @@ const PronosticsList = () => {
                         </button>
                     </div>
                 ) : groupedPronostics.length > 0 ? (
-                    <div className="space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
                         {groupedPronostics.map(({ date, pronostics }) => (
-                            <div key={date} className="space-y-4">
-                                {/* Header de date */}
-                                <div className="sticky top-4 z-10">
-                                    <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-6 py-3 shadow-sm">
+                            <div key={date} className="space-y-3 sm:space-y-4">
+                                {/* 📱 HEADER DE DATE MOBILE OPTIMISÉ */}
+                                <div className="sticky top-2 sm:top-4 z-10">
+                                    <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-2 sm:py-3 shadow-sm">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">
+                                            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-slate-100">
                                                 {formatDate(date)}
                                             </h2>
-                                            <span className="text-sm text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                                                {pronostics.length} pronostic{pronostics.length > 1 ? 's' : ''}
+                                            <span className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700 px-2 sm:px-3 py-1 rounded-full">
+                                                {pronostics.length} {isMobile ? '' : 'pronostic'}
+                                                {!isMobile && pronostics.length > 1 ? 's' : ''}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Liste des pronostics du jour */}
-                                <div className="space-y-3 pl-4">
+                                {/* 📱 LISTE DES PRONOSTICS RESPONSIVE */}
+                                <div className="space-y-3 pl-1 sm:pl-4">
                                     {pronostics.map((pronostic) => (
                                         <TimelinePronosticCard key={pronostic._id} pronostic={pronostic} />
                                     ))}
@@ -797,11 +895,24 @@ const PronosticsList = () => {
                         <div className="text-gray-500 dark:text-slate-400">
                             <div className="text-6xl mb-4">📅</div>
                             <p className="font-medium mb-2 text-gray-900 dark:text-slate-100">Aucun pronostic trouvé</p>
-                            <p className="text-sm">Modifiez vos filtres ou changez la période d'affichage</p>
+                            <p className="text-sm">
+                                {isMobile ? 'Modifiez vos filtres' : 'Modifiez vos filtres ou changez la période d\'affichage'}
+                            </p>
                         </div>
                     </div>
                 )}
             </div>
+
+            {/* Style pour masquer la scrollbar horizontale sur mobile */}
+            <style jsx>{`
+                .scrollbar-hide {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </div>
     );
 };
