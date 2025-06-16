@@ -72,7 +72,7 @@ const optionalAuth = async (req, res, next) => {
             return next();
         }
 
-        const token = authHeader.replace('Bearer', '');
+        const token = authHeader.replace('Bearer ', '');
 
         if (!token) {
             req.user = null;
