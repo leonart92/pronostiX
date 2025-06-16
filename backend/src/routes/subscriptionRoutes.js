@@ -367,7 +367,7 @@ router.get('/current', authenticate, asyncHandler(async (req, res) => {
 // @route   POST /api/subscriptions/cancel
 // @desc    Annuler l'abonnement à la fin de la période
 // @access  Private
-router.post('/cancel', requireActiveSubscription, asyncHandler(async (req, res) => {
+router.post('/cancel', authenticate, requireActiveSubscription, asyncHandler(async (req, res) => {
     const user = req.user;
     const subscription = await Subscription.findOne({
         userId: user._id,

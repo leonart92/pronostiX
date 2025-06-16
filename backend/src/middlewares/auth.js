@@ -5,8 +5,9 @@ const {logger} = require('../utils/logger');
 const authenticate = async(req, res, next ) => {
     try {
         const authHeader = req.header('Authorization');
-
+        console.log('🔍 AUTH - Header reçu:', authHeader);
         if (!authHeader) {
+            console.log('❌ AUTH - Pas de header');
             return res.status(401).json({
                 success: false,
                 message: 'Token not provided'
@@ -14,15 +15,19 @@ const authenticate = async(req, res, next ) => {
         }
 
         const token = authHeader.replace('Bearer ', '').trim();
+        console.log('🔍 AUTH - Token extrait:', token.slice(0, 30) + '...'); // LOG
 
         if (!token) {
+            console.log('❌ AUTH - Token vide');
             return res.status(401).json({
                 success: false,
                 message: 'Token not provided'
             });
         }
 
+        console.log('🔍 AUTH - JWT_SECRET existe:', !!process.env.JWT_SECRET); // LOG
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("AUTH decodé =>", decoded);
 
         const user = await User.findById(decoded.userId).select('-password -refreshTokens');
 
@@ -32,6 +37,7 @@ const authenticate = async(req, res, next ) => {
                 message: 'Invalid User'
             });
         }
+        console.log('✅ AUTH - User trouvé:', user.username, 'Status:', user.subscriptionStatus); // LOG
 
         req.user = user;
         req.userId = user._id;
@@ -106,20 +112,30 @@ const requireAdmin = (req, res, next) => {
 
 
 const requireActiveSubscription = (req, res, next) => {
+    console.log('🔍 REQUIRE_SUB - Start, req.user exists:', !!req.user);
+    console.log('🔍 REQUIRE_SUB - User:', req.user?.username);
     if (!req.user) {
+        console.log('❌ REQUIRE_SUB - req.user est NULL !');
+
         return res.status(401).json({
             success: false,
             message: 'Authentication required'
         });
     }
+    console.log('🔍 REQUIRE_SUB - Status:', req.user.subscriptionStatus);
+    console.log('🔍 REQUIRE_SUB - hasActiveSubscription():', req.user.hasActiveSubscription());
 
     if (!req.user.hasActiveSubscription()) {
+        console.log('❌ REQUIRE_SUB - Pas d\'abonnement actif');
+
         return res.status(403).json({
             success: false,
             message: 'Subscription required',
             code: 'SUBSCRIPTION_REQUIRED'
         });
     }
+    console.log('✅ REQUIRE_SUB - OK, next()');
+
     next();
 };
 

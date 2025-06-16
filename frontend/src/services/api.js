@@ -29,28 +29,40 @@ api.interceptors.request.use(
 // Intercepteur pour gérer les réponses et erreurs
 api.interceptors.response.use(
     (response) => {
+        console.log('✅ INTERCEPTOR - Réponse OK:', response.status);
         return response;
     },
     async (error) => {
         const originalRequest = error.config;
+        console.log('❌ INTERCEPTOR - Erreur:', error.response?.status, 'Retry?', originalRequest._retry);
+
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
+            console.log('🔄 INTERCEPTOR - Tentative refresh token...');
+
 
             try {
                 const refreshToken = localStorage.getItem('refreshToken');
+                console.log('🔍 INTERCEPTOR - RefreshToken exists:', !!refreshToken);
+
                 if (refreshToken) {
                     const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
                         refreshToken
                     });
 
                     const newToken = response.data.data.accessToken;
+                    console.log('✅ INTERCEPTOR - Nouveau token obtenu');
+
                     localStorage.setItem('accessToken', newToken);
 
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                    console.log('🔄 INTERCEPTOR - Retry de la requête originale...');
+
                     return api(originalRequest);
                 }
             } catch (refreshError) {
+                console.log('❌ INTERCEPTOR - Échec refresh:', refreshError.message);
 
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
@@ -59,6 +71,7 @@ api.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
+        console.log('❌ INTERCEPTOR - Erreur finale:', error.response?.data);
 
         handleApiError(error);
         return Promise.reject(error);

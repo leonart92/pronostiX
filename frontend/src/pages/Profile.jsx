@@ -100,11 +100,17 @@ const Profile = () => {
             return;
         }
 
+        // 🔍 LOGS FRONTEND
+        console.log('🔍 Token stocké:', localStorage.getItem('accessToken')?.slice(0, 30) + '...');
+        console.log('🔍 RefreshToken stocké:', !!localStorage.getItem('refreshToken'));
+
         try {
             await api.post('/subscriptions/cancel');
             toast.success('Abonnement annulé. Il restera actif jusqu\'à la fin de la période.');
             fetchSubscriptionInfo();
         } catch (error) {
+            console.log('❌ Erreur complète:', error.response?.data);
+            console.log('❌ Status:', error.response?.status);
             toast.error('Erreur lors de l\'annulation de l\'abonnement');
         }
     };
