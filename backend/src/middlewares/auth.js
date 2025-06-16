@@ -13,7 +13,7 @@ const authenticate = async(req, res, next ) => {
             });
         }
 
-        const token = authHeader.replace('Bearer', '').trim();
+        const token = authHeader.replace('Bearer ', '').trim();
 
         if (!token) {
             return res.status(401).json({
