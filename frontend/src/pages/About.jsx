@@ -23,23 +23,23 @@ const AboutHeroSection = () => {
                         Deux potes de 25 ans qui en avaient <span className="text-yellow-400">marre</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-                        De voir les gens se faire <strong className="text-red-400">plumer</strong> dans les paris sportifs 
+                        De voir les gens se faire <strong className="text-red-400">plumer</strong> dans les paris sportifs
                         parce qu'ils ne connaissent pas les <strong className="text-green-400">vraies values</strong>
                     </p>
 
-                    {/* Stats honnêtes */}
+                    {/* Points clés sans stats */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">2 ans</div>
-                            <div className="text-blue-100">qu'on développe nos algos</div>
+                            <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">🔥</div>
+                            <div className="text-blue-100">Passion pour les algos</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">81%</div>
-                            <div className="text-blue-100">de réussite sur nos analyses</div>
+                            <div className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">🎯</div>
+                            <div className="text-blue-100">Analyses détaillées</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">0%</div>
-                            <div className="text-blue-100">de bullshit marketing</div>
+                            <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">💯</div>
+                            <div className="text-blue-100">Transparence totale</div>
                         </div>
                     </div>
                 </div>
@@ -61,16 +61,16 @@ const OurRealStorySection = () => {
                         </h2>
                         <div className="space-y-6 text-lg text-gray-600 dark:text-slate-300">
                             <p>
-                                On était juste deux potes passionnés de <strong className="text-blue-600">foot, tennis et basket </strong> 
+                                On était juste deux potes passionnés de <strong className="text-blue-600">foot, tennis et basket </strong>
                                 qui regardaient les matchs ensemble depuis des années.
                             </p>
                             <p>
-                                Un jour, on s'est rendu compte d'un truc : <strong className="text-red-600">90% des gens 
-                                qui parient n'y connaissent rien aux vraies cotes</strong>. Ils voient "PSG favori" 
+                                Un jour, on s'est rendu compte d'un truc : <strong className="text-red-600">la plupart des gens
+                                qui parient n'y connaissent rien aux vraies cotes</strong>. Ils voient "PSG favori"
                                 et ils parient, sans analyser si la cote est intéressante ou non.
                             </p>
                             <p>
-                                Nous, on passait déjà nos soirées à analyser les stats, les formes, 
+                                Nous, on passait déjà nos soirées à analyser les stats, les formes,
                                 les compositions... Alors on s'est dit : <em className="text-blue-600">
                                 "Et si on aidait les gens à ne plus se faire avoir ?"</em>
                             </p>
@@ -79,8 +79,8 @@ const OurRealStorySection = () => {
                         <div className="mt-8 p-6 bg-gray-100 dark:bg-slate-800 rounded-xl">
                             <h4 className="font-bold text-gray-900 dark:text-slate-100 mb-3">Notre premier test :</h4>
                             <p className="text-gray-600 dark:text-slate-300">
-                                Un simple fichier <strong>Excel</strong> avec nos prédictions vs les résultats réels. 
-                                Résultat : on était dans le vrai <strong className="text-green-600">8 fois sur 10</strong>. 
+                                Un simple fichier <strong>Excel</strong> avec nos prédictions vs les résultats réels.
+                                Résultat : on était <strong className="text-green-600">bien plus souvent dans le vrai</strong> que la moyenne.
                                 C'est là qu'on a su qu'on tenait quelque chose.
                             </p>
                         </div>
@@ -93,15 +93,15 @@ const OurRealStorySection = () => {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Matchs analysés par semaine</span>
-                                    <span className="text-yellow-300 font-bold">50+</span>
+                                    <span className="text-yellow-300 font-bold">+50</span>
                                 </div>
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Variables analysées par match</span>
-                                    <span className="text-green-300 font-bold">120+</span>
+                                    <span className="text-green-300 font-bold">+200</span>
                                 </div>
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Temps moyen par analyse</span>
-                                    <span className="text-blue-300 font-bold">2h</span>
+                                    <span className="text-blue-300 font-bold">+2h</span>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +134,7 @@ const TechApproachSection = () => {
                             Data scraping
                         </h3>
                         <p className="text-gray-600 dark:text-slate-300 text-sm leading-relaxed">
-                            On récupère les données de partout : stats officielles, réseaux sociaux, 
+                            On récupère les données de partout : stats officielles, réseaux sociaux,
                             news, compositions... Tout ce qui peut influencer un match.
                         </p>
                     </div>
@@ -145,7 +145,7 @@ const TechApproachSection = () => {
                             Machine Learning
                         </h3>
                         <p className="text-gray-600 dark:text-slate-300 text-sm leading-relaxed">
-                            Nos algorithmes apprennent des patterns qu'on ne voit pas à l'œil nu. 
+                            Nos algorithmes apprennent des patterns qu'on ne voit pas à l'œil nu.
                             Python, pandas, scikit-learn... tout l'arsenal.
                         </p>
                     </div>
@@ -156,7 +156,7 @@ const TechApproachSection = () => {
                             Analyse humaine
                         </h3>
                         <p className="text-gray-600 dark:text-slate-300 text-sm leading-relaxed">
-                            L'IA c'est bien, mais on regarde aussi les matchs ! Contexte, motivation, 
+                            L'IA c'est bien, mais on regarde aussi les matchs ! Contexte, motivation,
                             enjeux... des trucs qu'une machine ne peut pas comprendre.
                         </p>
                     </div>
@@ -224,7 +224,7 @@ const TransparencySection = () => {
                                         On publie tous nos résultats
                                     </h4>
                                     <p className="text-gray-600 dark:text-slate-300">
-                                        Wins ET losses. Pas de cherry-picking, pas de manipulation. 
+                                        Wins ET losses. Pas de cherry-picking, pas de manipulation.
                                         Notre historique complet est accessible.
                                     </p>
                                 </div>
@@ -237,7 +237,7 @@ const TransparencySection = () => {
                                         On prend des risques calculés
                                     </h4>
                                     <p className="text-gray-600 dark:text-slate-300">
-                                        Parfois on mise sur des cotes élevées parce qu'on a détecté une value. 
+                                        Parfois on mise sur des cotes élevées parce qu'on a détecté une value.
                                         Ça peut foirer, mais statistiquement ça paye.
                                     </p>
                                 </div>
@@ -250,7 +250,7 @@ const TransparencySection = () => {
                                         Zéro bullshit "expert"
                                     </h4>
                                     <p className="text-gray-600 dark:text-slate-300">
-                                        On ne prétend pas avoir 20 ans d'expérience ou être d'anciens pros. 
+                                        On ne prétend pas avoir 20 ans d'expérience ou être d'anciens pros.
                                         Juste deux mecs qui savent analyser les data.
                                     </p>
                                 </div>
@@ -258,7 +258,7 @@ const TransparencySection = () => {
                         </div>
                     </div>
 
-                    {/* Nos vraies stats */}
+                    {/* Nos vraies promesses */}
                     <div className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8">
                         <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
                             Ce qu'on vous promet
@@ -269,7 +269,7 @@ const TransparencySection = () => {
                                 <span className="text-2xl mr-4">🔍</span>
                                 <div>
                                     <div className="font-bold text-gray-900 dark:text-slate-100">Transparence totale</div>
-                                    <div className="text-sm text-gray-600 dark:text-slate-300">Historique 100% public</div>
+                                    <div className="text-sm text-gray-600 dark:text-slate-300">Historique complet public</div>
                                 </div>
                             </div>
 
@@ -277,7 +277,7 @@ const TransparencySection = () => {
                                 <span className="text-2xl mr-4">🤖</span>
                                 <div>
                                     <div className="font-bold text-gray-900 dark:text-slate-100">Amélioration continue</div>
-                                    <div className="text-sm text-gray-600 dark:text-slate-300">Nos algos évoluent chaque semaine</div>
+                                    <div className="text-sm text-gray-600 dark:text-slate-300">Nos algos évoluent constamment</div>
                                 </div>
                             </div>
 
@@ -321,14 +321,14 @@ const WhyWeDoItSection = () => {
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-slate-100 mb-8">
                         Pourquoi on fait ça ?
                     </h2>
-                    
+
                     <div className="text-left space-y-8">
                         <div className="bg-white dark:bg-slate-700 rounded-xl p-8">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-4">
                                 🔥 Parce qu'on en avait marre de voir les gens se faire avoir
                             </h3>
                             <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
-                                Tous ces "tipsters" qui vendent du rêve avec des screenshots bidons, 
+                                Tous ces "tipsters" qui vendent du rêve avec des screenshots bidons,
                                 ces sites qui cachent leurs vraies stats... On voulait faire les choses proprement.
                             </p>
                         </div>
@@ -338,7 +338,7 @@ const WhyWeDoItSection = () => {
                                 🚀 Parce qu'on kiffe développer nos algos
                             </h3>
                             <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
-                                Honnêtement, on passerait des heures à optimiser nos modèles même si personne ne s'abonnait. 
+                                Honnêtement, on passerait des heures à optimiser nos modèles même si personne ne s'abonnait.
                                 C'est notre passion, autant la partager.
                             </p>
                         </div>
@@ -348,7 +348,7 @@ const WhyWeDoItSection = () => {
                                 🎯 Parce qu'on veut prouver qu'on peut battre les bookmakers
                             </h3>
                             <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
-                                C'est un défi technique et sportif. Les bookmakers ont leurs algorithmes, 
+                                C'est un défi technique et sportif. Les bookmakers ont leurs algorithmes,
                                 nous on a les nôtres. May the best algo win.
                             </p>
                         </div>
@@ -370,7 +370,7 @@ const AuthenticCTASection = () => {
                         Envie de nous suivre dans l'aventure ?
                     </h2>
                     <p className="text-xl text-blue-100 mb-12 leading-relaxed">
-                        On ne va pas vous promettre de devenir riche. Mais si vous voulez des analyses 
+                        On ne va pas vous promettre de devenir riche. Mais si vous voulez des analyses
                         honnêtes, transparentes et basées sur de la vraie data, vous êtes au bon endroit.
                     </p>
 
