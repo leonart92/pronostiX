@@ -93,15 +93,15 @@ const OurRealStorySection = () => {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Matchs analysés par semaine</span>
-                                    <span className="text-yellow-300 font-bold">+50</span>
+                                    <span className="text-yellow-300 font-bold">+45</span>
                                 </div>
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Variables analysées par match</span>
-                                    <span className="text-green-300 font-bold">+200</span>
+                                    <span className="text-green-300 font-bold">+50</span>
                                 </div>
                                 <div className="flex justify-between items-center bg-white/20 rounded-lg p-3">
                                     <span>Temps moyen par analyse</span>
-                                    <span className="text-blue-300 font-bold">+2h</span>
+                                    <span className="text-blue-300 font-bold">+1h</span>
                                 </div>
                             </div>
                         </div>
