@@ -16,10 +16,8 @@ const EmailVerification = () => {
         setStatus('loading');
 
         try {
-            console.log('📧 Vérification manuelle du token:', token);
             const response = await api.get(`/auth/verify-email/${token}`);
 
-            console.log('✅ Réponse reçue:', response.data);
             setStatus('success');
             setMessage(response.data.message);
             setAlreadyVerified(response.data.data?.alreadyVerified || false);

@@ -22,11 +22,6 @@ export const pronosticService = {
 
         const response = await api.get(`/pronostics?${queryParams.toString()}`);
 
-        console.log('🔍 SERVICE DEBUG - Réponse brute:', response);
-        console.log('🔍 SERVICE DEBUG - Status:', response.status);
-        console.log('🔍 SERVICE DEBUG - Data:', response.data);
-        console.log('🔍 SERVICE DEBUG - Pronostics trouvés:', response.data?.pronostics?.length || 0);
-
         return response.data;
     },
 

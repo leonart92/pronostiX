@@ -32,15 +32,12 @@ const Success = () => {
 
         const attemptVerification = async () => {
             try {
-                console.log(`🔍 Vérification session (tentative ${retryCount + 1}/${maxRetries}):`, sessionId);
 
                 // 1. Vérifier la session Stripe
                 const sessionResponse = await api.get(`/subscriptions/session/${sessionId}`);
                 const sessionData = sessionResponse.data.data;
                 setSessionData(sessionData);
 
-                console.log('✅ Session data:', sessionData);
-                console.log('💳 Payment status:', sessionData.payment_status || sessionData.status);
 
                 // 🆕 Vérifier plusieurs statuts possibles
                 const isPaymentSuccessful =
@@ -50,14 +47,12 @@ const Success = () => {
                     sessionData.payment_status === 'complete';
 
                 if (isPaymentSuccessful) {
-                    console.log('✅ Paiement confirmé, synchronisation...');
 
                     // 2. Synchroniser l'abonnement
                     try {
                         setSyncStatus('syncing');
                         await syncSubscriptionFromStripe(sessionId);
 
-                        console.log('✅ Synchronisation réussie via AuthContext');
                         setSyncStatus('success');
 
                         // 3. Redirection automatique vers le dashboard après 3 secondes
@@ -66,14 +61,12 @@ const Success = () => {
                         }, 3000);
 
                     } catch (syncError) {
-                        console.error('❌ Erreur synchronisation:', syncError);
                         setSyncStatus('error');
                     }
                 } else {
                     // 🆕 Si pas encore payé, réessayer
                     if (retryCount < maxRetries - 1) {
                         retryCount++;
-                        console.log(`⏳ Paiement en cours (${sessionData.payment_status}), nouvelle tentative dans ${retryDelay/1000}s...`);
 
                         setTimeout(() => {
                             attemptVerification();

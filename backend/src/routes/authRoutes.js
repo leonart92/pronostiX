@@ -130,7 +130,6 @@ const verificationInProgress = new Map();
 router.get('/verify-email/:token', asyncHandler(async (req, res) => {
     const { token } = req.params;
 
-    console.log('🔍 Token reçu:', token);
 
     // ✅ PROTECTION : Éviter les appels simultanés
     if (verificationInProgress.has(token)) {
@@ -151,7 +150,6 @@ router.get('/verify-email/:token', asyncHandler(async (req, res) => {
             emailVerificationToken: token
         });
 
-        console.log('👤 User trouvé:', userWithToken ? 'OUI' : 'NON');
 
         // ✅ Si token pas trouvé, peut-être déjà vérifié
         if (!userWithToken) {
@@ -162,7 +160,6 @@ router.get('/verify-email/:token', asyncHandler(async (req, res) => {
             });
 
             if (recentlyVerified) {
-                console.log('✅ User récemment vérifié trouvé');
                 return res.json({
                     success: true,
                     message: 'Email déjà vérifié !',
