@@ -5,7 +5,7 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // ✅ Email par défaut (vérifié sur SendGrid)
-const DEFAULT_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SMTP_USER || 'noreply@pronostix.com';
+const DEFAULT_FROM_EMAIL = process.env.SMTP_USER;
 
 console.log('📧 SendGrid configuré avec:', DEFAULT_FROM_EMAIL);
 
