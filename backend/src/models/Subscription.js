@@ -111,23 +111,23 @@ subscriptionSchema.statics.getAvailablePlans = function () {
     return {
         monthly: {
             name: 'Mensuel',
-            price: 14.99,
+            price: 9.99,
             duration: 30,
             stripePriceId: process.env.STRIPE_MONTHLY_PRICE_ID
         },
         quarterly: {
             name: 'Trimestriel',
-            price: 39.99,
+            price: 24.88,
             duration: 90,
             stripePriceId: process.env.STRIPE_QUARTERLY_PRICE_ID,
-            savings: '11%'
+            savings: '17%'
         },
         annually: {
             name: 'Annuel',
-            price: 149.99,
+            price: 89.91,
             duration: 365,
             stripePriceId: process.env.STRIPE_ANNUAL_PRICE_ID,
-            savings: '17%'
+            savings: '25%'
         }
     };
 };

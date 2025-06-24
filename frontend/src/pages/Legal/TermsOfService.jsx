@@ -21,9 +21,9 @@ const TermsOfService = () => {
     };
 
     const subscriptionPlans = [
-        { name: "Mensuel", price: "14,99€", duration: "1 mois" },
-        { name: "Trimestriel", price: "37,47€", duration: "3 mois" },
-        { name: "Annuel", price: "134,88€", duration: "12 mois" }
+        { name: "Mensuel", price: "9,99€", duration: "1 mois" },
+        { name: "Trimestriel", price: "24,88€", duration: "3 mois" },
+        { name: "Annuel", price: "89,91€", duration: "12 mois" }
     ];
 
     return (

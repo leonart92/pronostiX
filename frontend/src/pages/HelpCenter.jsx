@@ -88,7 +88,7 @@ const HelpCenter = () => {
         {
             category: 'subscription',
             question: "Quels sont les différents plans d'abonnement ?",
-            answer: "Nous proposons 3 plans : Mensuel (14,99€), Trimestriel (37,47€) et Annuel (134,88€). Chaque plan donne accès à tous nos pronostics exclusifs."
+            answer: "Nous proposons 3 plans : Mensuel (9,99€), Trimestriel (24,88€) et Annuel (89,91€). Chaque plan donne accès à tous nos pronostics exclusifs."
         },
         {
             category: 'subscription',

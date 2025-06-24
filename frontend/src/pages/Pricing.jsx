@@ -4,45 +4,45 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-const Pricing = () => {
-    const [selectedPlan, setSelectedPlan] = useState('quarterly');
-    const { isAuthenticated } = useAuth();
+    const Pricing = () => {
+        const [selectedPlan, setSelectedPlan] = useState('quarterly');
+        const { isAuthenticated } = useAuth();
 
-    const plans = {
+        const plans = {
         monthly: {
             id: 'monthly',
             name: 'Mensuel',
-            price: 14.99,
+            price: 9.99,
             period: 'mois',
-            totalPrice: 14.99,
+            totalPrice: 9.99,
             savings: null,
             description: 'Parfait pour commencer',
             badge: null,
-            buttonText: 'Commencer - 14,99€/mois'
+            buttonText: 'Commencer - 9,99€/mois'
         },
         quarterly: {
             id: 'quarterly',
             name: 'Trimestriel',
-            price: 12.49,
-            originalPrice: 14.99,
+            price: 8.29,
+            originalPrice: 9.99,
             period: 'mois',
-            totalPrice: 37.47,
+            totalPrice: 24.88,
             savings: '17%',
             description: 'Le plus populaire',
             badge: 'Plus populaire',
-            buttonText: 'Choisir - 37,47€ tous les 3 mois'
+            buttonText: 'Choisir - 24,88€ tous les 3 mois'
         },
         annually: {
             id: 'annually',
             name: 'Annuel',
-            price: 11.24,
-            originalPrice: 14.99,
+            price: 7.49,
+            originalPrice: 9.99,
             period: 'mois',
-            totalPrice: 134.88,
+            totalPrice: 89.91,
             savings: '25%',
             description: 'Meilleure économie',
             badge: 'Meilleur prix',
-            buttonText: 'Choisir - 134,88€/an'
+            buttonText: 'Choisir - 89,91€/an'
         }
     };
 

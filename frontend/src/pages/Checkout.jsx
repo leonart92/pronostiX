@@ -16,39 +16,39 @@ const Checkout = () => {
 
     // Plans disponibles (correspondent à ceux de Pricing.jsx)
     const availablePlans = {
-        monthly: {
-            id: 'monthly',
-            name: 'Mensuel',
-            price: 14.99,
-            period: 'mois',
-            totalPrice: 14.99,
-            savings: null,
-            description: 'Parfait pour commencer',
-            billingInfo: 'Facturé mensuellement'
-        },
-        quarterly: {
-            id: 'quarterly',
-            name: 'Trimestriel',
-            price: 12.49,
-            originalPrice: 14.99,
-            period: 'mois',
-            totalPrice: 37.47,
-            savings: '17%',
-            description: 'Le plus populaire',
-            billingInfo: 'Facturé tous les 3 mois'
-        },
-        annually: {
-            id: 'annually',
-            name: 'Annuel',
-            price: 11.24,
-            originalPrice: 14.99,
-            period: 'mois',
-            totalPrice: 134.88,
-            savings: '25%',
-            description: 'Meilleure économie',
-            billingInfo: 'Facturé annuellement'
-        }
-    };
+    monthly: {
+        id: 'monthly',
+        name: 'Mensuel',
+        price: 9.99,
+        period: 'mois',
+        totalPrice: 9.99,
+        savings: null,
+        description: 'Parfait pour commencer',
+        billingInfo: 'Facturé mensuellement'
+    },
+    quarterly: {
+        id: 'quarterly',
+        name: 'Trimestriel',
+        price: 8.29, // 24.88 / 3
+        originalPrice: 9.99,
+        period: 'mois',
+        totalPrice: 24.88,
+        savings: '17%',
+        description: 'Le plus populaire',
+        billingInfo: 'Facturé tous les 3 mois'
+    },
+    annually: {
+        id: 'annually',
+        name: 'Annuel',
+        price: 7.49, // 89.91 / 12
+        originalPrice: 9.99,
+        period: 'mois',
+        totalPrice: 89.91,
+        savings: '25%',
+        description: 'Meilleure économie',
+        billingInfo: 'Facturé annuellement'
+    }
+};
 
     useEffect(() => {
         // Vérifier si l'utilisateur est connecté

@@ -107,17 +107,17 @@ router.post('/create-checkout', authenticate, [
         plans = {
             monthly: {
                 name: 'Mensuel',
-                price: 14.99,
+                price: 9.99,
                 stripePriceId: process.env.STRIPE_MONTHLY_PRICE_ID
             },
             quarterly: {
                 name: 'Trimestriel',
-                price: 37.47,
+                price: 24.88,
                 stripePriceId: process.env.STRIPE_QUARTERLY_PRICE_ID
             },
             annually: {
                 name: 'Annuel',
-                price: 134.88,
+                price: 89.91,
                 stripePriceId: process.env.STRIPE_ANNUAL_PRICE_ID
             }
         };
