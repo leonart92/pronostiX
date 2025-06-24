@@ -15,40 +15,40 @@ const Checkout = () => {
     const [currentSubscription, setCurrentSubscription] = useState(null);
 
     // Plans disponibles (correspondent à ceux de Pricing.jsx)
-    const availablePlans = {
-    monthly: {
-        id: 'monthly',
-        name: 'Mensuel',
-        price: 9.99,
-        period: 'mois',
-        totalPrice: 9.99,
-        savings: null,
-        description: 'Parfait pour commencer',
-        billingInfo: 'Facturé mensuellement'
-    },
-    quarterly: {
-        id: 'quarterly',
-        name: 'Trimestriel',
-        price: 8.29, // 24.88 / 3
-        originalPrice: 9.99,
-        period: 'mois',
-        totalPrice: 24.88,
-        savings: '17%',
-        description: 'Le plus populaire',
-        billingInfo: 'Facturé tous les 3 mois'
-    },
-    annually: {
-        id: 'annually',
-        name: 'Annuel',
-        price: 7.49, // 89.91 / 12
-        originalPrice: 9.99,
-        period: 'mois',
-        totalPrice: 89.91,
-        savings: '25%',
-        description: 'Meilleure économie',
-        billingInfo: 'Facturé annuellement'
-    }
-};
+        const availablePlans = {
+        monthly: {
+            id: 'monthly',
+            name: 'Mensuel',
+            price: 9.99,
+            period: 'mois',
+            totalPrice: 9.99,
+            savings: null,
+            description: 'Parfait pour commencer',
+            billingInfo: 'Facturé mensuellement'
+        },
+        quarterly: {
+            id: 'quarterly',
+            name: 'Trimestriel',
+            price: 8.29, // 24.88 / 3
+            originalPrice: 9.99,
+            period: 'mois',
+            totalPrice: 24.88,
+            savings: '17%',
+            description: 'Le plus populaire',
+            billingInfo: 'Facturé tous les 3 mois'
+        },
+        annually: {
+            id: 'annually',
+            name: 'Annuel',
+            price: 7.49, // 89.91 / 12
+            originalPrice: 9.99,
+            period: 'mois',
+            totalPrice: 89.91,
+            savings: '25%',
+            description: 'Meilleure économie',
+            billingInfo: 'Facturé annuellement'
+        }
+    };
 
     useEffect(() => {
         // Vérifier si l'utilisateur est connecté
@@ -248,7 +248,7 @@ const Checkout = () => {
                         {/* Plan sélectionné */}
                         <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
                             <div className="flex justify-between items-start mb-4">
-                                <div>
+                                <div className="flex-1 min-w-0">
                                     <h3 className="font-semibold text-gray-900 dark:text-slate-100">
                                         Plan {selectedPlan.name}
                                     </h3>
@@ -257,29 +257,29 @@ const Checkout = () => {
                                     </p>
                                 </div>
                                 {selectedPlan.savings && (
-                                    <span className="badge badge-success">
+                                    <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded-full text-sm font-medium ml-2 flex-shrink-0">
                                         -{selectedPlan.savings}
                                     </span>
                                 )}
                             </div>
 
-                            {/* Prix */}
-                            <div className="flex justify-between items-center">
-                                <div>
+                            {/* Prix - Version responsive */}
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                                <div className="flex-1 min-w-0">
                                     {selectedPlan.originalPrice && (
-                                        <span className="text-sm text-gray-400 dark:text-slate-500 line-through mr-2">
+                                        <div className="text-sm text-gray-400 dark:text-slate-500 line-through mb-1">
                                             {selectedPlan.originalPrice}€/{selectedPlan.period}
-                                        </span>
+                                        </div>
                                     )}
-                                    <span className="text-lg font-bold text-gray-900 dark:text-slate-100">
+                                    <div className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-2">
                                         {selectedPlan.price}€/{selectedPlan.period}
-                                    </span>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                <div className="text-left sm:text-right flex-shrink-0">
+                                    <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                                         {selectedPlan.totalPrice}€
                                     </div>
-                                    <div className="text-sm text-gray-600 dark:text-slate-400">
+                                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 whitespace-nowrap">
                                         {selectedPlan.billingInfo}
                                     </div>
                                 </div>
@@ -299,7 +299,7 @@ const Checkout = () => {
                                 'Support prioritaire'
                             ].map((feature, index) => (
                                 <div key={index} className="flex items-center">
-                                    <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
                                     <span className="text-gray-700 dark:text-slate-300">{feature}</span>
@@ -386,19 +386,19 @@ const Checkout = () => {
                         {/* Garanties */}
                         <div className="mt-6 space-y-2">
                             <div className="flex items-center text-sm text-gray-600 dark:text-slate-400">
-                                <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                                 Paiement 100% sécurisé
                             </div>
                             <div className="flex items-center text-sm text-gray-600 dark:text-slate-400">
-                                <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                                 Garantie de remboursement 7 jours
                             </div>
                             <div className="flex items-center text-sm text-gray-600 dark:text-slate-400">
-                                <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                                 Résiliation à tout moment
