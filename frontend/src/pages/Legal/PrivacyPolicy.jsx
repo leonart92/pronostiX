@@ -93,15 +93,15 @@ const PrivacyPolicy = () => {
                                     <div>
                                         <h3 className="font-semibold text-gray-900 dark:text-slate-50 mb-2">PronostiX SAS</h3>
                                         <p className="text-gray-600 dark:text-slate-300 text-sm">
-                                            123 Rue du Sport<br />
-                                            75001 Paris, France<br />
-                                            Email : <a href="mailto:privacy@pronostix.fr" className="text-blue-600 hover:text-blue-700">privacy@pronostix.fr</a>
+                                            4 All. Alfred Sisley<br />
+                                            91100, Levallois-Perret<br />
+                                            Email : <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a>
                                         </p>
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900 dark:text-slate-50 mb-2">Délégué à la Protection des Données</h3>
                                         <p className="text-gray-600 dark:text-slate-300 text-sm">
-                                            Email : <a href="mailto:dpo@pronostix.fr" className="text-blue-600 hover:text-blue-700">dpo@pronostix.fr</a><br />
+                                            Email : <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a><br />
                                             Pour toute question relative à vos données personnelles
                                         </p>
                                     </div>
@@ -382,8 +382,8 @@ const PrivacyPolicy = () => {
                             </p>
                             <div className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
                                 <p className="font-medium text-gray-900 dark:text-slate-50">Contact</p>
-                                <p>Email : <a href="mailto:privacy@pronostix.fr" className="text-blue-600 hover:text-blue-700">privacy@pronostix.fr</a></p>
-                                <p>Adresse : 123 Rue du Sport, 75001 Paris, France</p>
+                                <p>Email : <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a></p>
+                                <p>Adresse : 4 All. Alfred Sisley, 91100 Levallois-Perret, France</p>
                             </div>
                         </div>
                     </div>

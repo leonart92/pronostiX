@@ -395,12 +395,12 @@ const TermsOfService = () => {
                                 <h3 className="font-semibold text-gray-900 dark:text-slate-50 mb-3">PronostiX SAS</h3>
                                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <p><strong>Adresse :</strong> 123 Rue du Sport, 75001 Paris</p>
-                                        <p><strong>Email :</strong> <a href="mailto:legal@pronostix.fr" className="text-blue-600 hover:text-blue-700">legal@pronostix.fr</a></p>
+                                        <p><strong>Adresse :</strong> 4 All. Alfred Sisley, 91100 Levallois-Perret</p>
+                                        <p><strong>Email :</strong> <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a></p>
                                     </div>
                                     <div>
-                                        <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
-                                        <p><strong>Support :</strong> <a href="mailto:support@pronostix.fr" className="text-blue-600 hover:text-blue-700">support@pronostix.fr</a></p>
+                                        {/* <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p> */}
+                                        <p><strong>Support :</strong> <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a></p>
                                     </div>
                                 </div>
                             </div>

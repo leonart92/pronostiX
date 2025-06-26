@@ -31,7 +31,7 @@ const MentionsLegales = () => {
                     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-8 mb-8">
 
                         {/* 1. Identification de l'éditeur */}
-                        <section className="mb-12">
+                        {/* <section className="mb-12">
                             <div className="flex items-center mb-6">
                                 <IdentificationIcon className="w-6 h-6 text-blue-600 mr-3" />
                                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50">
@@ -94,14 +94,14 @@ const MentionsLegales = () => {
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </section> */}
 
                         {/* 2. Coordonnées */}
                         <section className="mb-12">
                             <div className="flex items-center mb-6">
                                 <EnvelopeIcon className="w-6 h-6 text-blue-600 mr-3" />
                                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50">
-                                    2. Coordonnées
+                                    1. Coordonnées
                                 </h2>
                             </div>
 
@@ -112,8 +112,8 @@ const MentionsLegales = () => {
                                         <div>
                                             <p className="font-medium text-gray-900 dark:text-slate-50">Adresse du siège social</p>
                                             <p className="text-gray-600 dark:text-slate-300">
-                                                123 Rue du Sport<br />
-                                                75001 Paris<br />
+                                                4 All. Alfred Sisley<br />
+                                                91100 Levallois-Perret<br />
                                                 France
                                             </p>
                                         </div>
@@ -125,17 +125,17 @@ const MentionsLegales = () => {
                                         <EnvelopeIcon className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                                         <div>
                                             <p className="font-medium text-gray-900 dark:text-slate-50">Email</p>
-                                            <p className="text-gray-600 dark:text-slate-300">contact@pronostix.fr</p>
+                                            <p className="text-gray-600 dark:text-slate-300">pronostix.service@gmail.com</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-start">
+                                    {/* <div className="flex items-start">
                                         <PhoneIcon className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                                         <div>
                                             <p className="font-medium text-gray-900 dark:text-slate-50">Téléphone</p>
                                             <p className="text-gray-600 dark:text-slate-300">+33 1 23 45 67 89</p>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </section>
@@ -143,10 +143,10 @@ const MentionsLegales = () => {
                         {/* 3. Directeur de publication */}
                         <section className="mb-12">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50 mb-4">
-                                3. Directeur de publication
+                                2. Directeur de publication
                             </h2>
                             <p className="text-gray-600 dark:text-slate-300">
-                                Le directeur de la publication du site PronostiX est <strong>[Nom du Président/Directeur]</strong>,
+                                Le directeur de la publication du site PronostiX est <strong>Leonart Heurteux</strong>,
                                 en sa qualité de représentant légal de la société PronostiX SAS.
                             </p>
                         </section>
@@ -156,7 +156,7 @@ const MentionsLegales = () => {
                             <div className="flex items-center mb-6">
                                 <GlobeAltIcon className="w-6 h-6 text-blue-600 mr-3" />
                                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50">
-                                    4. Hébergement
+                                    3. Hébergement
                                 </h2>
                             </div>
 
@@ -177,7 +177,7 @@ const MentionsLegales = () => {
                         {/* 5. Propriété intellectuelle */}
                         <section className="mb-12">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50 mb-4">
-                                5. Propriété intellectuelle
+                                4. Propriété intellectuelle
                             </h2>
                             <div className="space-y-4 text-gray-600 dark:text-slate-300">
                                 <p>
@@ -197,7 +197,7 @@ const MentionsLegales = () => {
                         {/* 6. Responsabilité */}
                         <section className="mb-12">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50 mb-4">
-                                6. Limitation de responsabilité
+                                5. Limitation de responsabilité
                             </h2>
                             <div className="space-y-4 text-gray-600 dark:text-slate-300">
                                 <p>
@@ -223,7 +223,7 @@ const MentionsLegales = () => {
                         {/* 7. Liens hypertextes */}
                         <section className="mb-12">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50 mb-4">
-                                7. Liens hypertextes
+                                6. Liens hypertextes
                             </h2>
                             <div className="space-y-4 text-gray-600 dark:text-slate-300">
                                 <p>
@@ -239,7 +239,7 @@ const MentionsLegales = () => {
                         {/* 8. Droit applicable */}
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-50 mb-4">
-                                8. Droit applicable et juridiction
+                                7. Droit applicable et juridiction
                             </h2>
                             <div className="space-y-4 text-gray-600 dark:text-slate-300">
                                 <p>
@@ -248,7 +248,7 @@ const MentionsLegales = () => {
                                 </p>
                                 <p>
                                     Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter
-                                    à l'adresse : <a href="mailto:legal@pronostix.fr" className="text-blue-600 hover:text-blue-700">legal@pronostix.fr</a>
+                                    à l'adresse : <a href="mailto:pronostix.service@gmail.com" className="text-blue-600 hover:text-blue-700">pronostix.service@gmail.com</a>
                                 </p>
                             </div>
                         </section>
